@@ -8,8 +8,10 @@ class Ability
 
     if user.role? :admin
       can :manage, :all
-    else
-      # the typical read :all won't work here. will have to think about proper permissions on vote reading
+    elsif user.created_at # are they registered, in other words
+      can :create, :vote
     end
+
+    # default is can't do anything special for now
   end
 end

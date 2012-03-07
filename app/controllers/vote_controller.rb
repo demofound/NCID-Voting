@@ -14,12 +14,12 @@ class VoteController < ApplicationController
 
   # handles the submission of a casted vote by a voter
   def create
-    vote_contents = {
+    @vote_contents = {
       # TODO: define some contents
     }
 
-    unless @vote = Vote.create(vote_contents)
-      logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{vote_contents.inspect}"
+    unless @vote = Vote.create(@vote_contents)
+      logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
       return render :status => 422
     end
 
@@ -35,6 +35,10 @@ class VoteController < ApplicationController
       logger.warn "user #{current_user.inspect} attempted to read vote #{params[:ref_code].inspect} but was not authorized to do so"
       unauthorized!
     end
+
+    @vote_contents = {
+      # TODO: define some contents
+    }
   end
 
   # modify a vote
@@ -45,7 +49,15 @@ class VoteController < ApplicationController
       unauthorized!
     end
 
+    @vote_contents = {
+      # TODO: define some contents
+    }
+
     # FIXME: add journal documentation of this event
+    unless @vote.update_attributes!(@vote_contents)
+      logger.warn "user #{current_user.inspect} attempted to update vote with invalid data #{@vote_contents.inspect}"
+      return render :status => 422
+    end
   end
 
   # nuke a vote

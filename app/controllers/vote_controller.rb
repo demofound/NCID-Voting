@@ -24,6 +24,8 @@ class VoteController < ApplicationController
     end
 
     unauthorized! if cannot? :create, @vote
+
+    # FIXME: add journal documentation of this event
   end
 
   # view a vote
@@ -39,8 +41,24 @@ class VoteController < ApplicationController
   def update
     # FIXME: verify that can is properly checking ownership of the vote... magical
     unless user.can? :update, @vote
-      logger.warn "user #{current_user.inspect} attempted to delete vote #{params[:ref_code].inspect} but was not authorized to do so"
+      logger.warn "user #{current_user.inspect} attempted to update vote #{params[:ref_code].inspect} but was not authorized to do so"
       unauthorized!
+    end
+
+    # FIXME: add journal documentation of this event
+  end
+
+  # nuke a vote
+  def destroy
+    unless user.can? :destroy, @vote
+      logger.warn "user #{current_user.inspect} attempted to destroy vote #{params[:ref_code].inspect} but was not authorized to do so"
+      unauthorized!
+    end
+
+    # FIXME: add journal documentation of this event
+    unless @vote.destroy
+      logger.error "vote #{params[:ref_code].inspect} was unable to be destroyed"
+      return render :status => 500 # something bizarre happened
     end
   end
 

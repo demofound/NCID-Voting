@@ -1,6 +1,6 @@
 class VoteController < ApplicationController
   before_filter :login_required?
-  before_filter :vote_exists?, :only => [:show, :update, :delete]
+  before_filter :vote_exists?,   :only => [:show, :update, :delete]
   before_filter :already_voted?, :only => [:new, :create]
 
   # renders the page where a voter will decide what vote to cast

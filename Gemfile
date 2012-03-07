@@ -11,7 +11,8 @@ gem 'sass-rails'
 gem "meta_search"
 gem "twitter-bootstrap-rails"
 gem "cancan"
-gem "omniauth-facebook",           :require => "omniauth-facebook"
+gem "omniauth"
+#gem "omniauth-facebook",           :require => "omniauth-facebook"
 
 # Use unicorn as the web server
 # gem 'unicorn'

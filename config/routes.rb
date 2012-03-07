@@ -1,4 +1,7 @@
 NciVote::Application.routes.draw do
+  root :to => "home#index"
+  get "home/index"
+
   ActiveAdmin.routes(self)
 
   devise_for :users, ActiveAdmin::Devise.config

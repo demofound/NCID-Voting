@@ -1,9 +1,27 @@
 class User < ActiveRecord::Base
+  has_one :vote
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, 
+  devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
+
+  # yes, this is ripped off from Ryan Bates' Railscast
+  named_scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
+  ROLES = %w[admin voting_official voter]
+
+  def roles=(roles)
+    return self.roles.mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+  end
+
+  def roles
+    return ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
+  end
+
+  def role?
+    return roles.include? role.to_s
+  end
 end

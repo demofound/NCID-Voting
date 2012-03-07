@@ -1,10 +1,10 @@
 NciVote::Application.routes.draw do
   ActiveAdmin.routes(self)
 
-  devise_for :users, ActiveAdmin::Devise.config
-
   root :to => "home#index"
   get "home/index"
+
+  devise_for :users, ActiveAdmin::Devise.config
 
   controller :vote, :path => "/vote" do
     get    "/cast"      => :new,    :as => :new_vote

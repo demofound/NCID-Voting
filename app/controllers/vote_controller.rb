@@ -1,5 +1,7 @@
 class VoteController < ApplicationController
+  before_filter :login_required?
   before_filter :vote_exists?, :only => [:show, :update, :delete]
+  before_filter :already_voted?, :only => [:new, :create]
 
   # renders the page where a voter will decide what vote to cast
   def new
@@ -9,7 +11,10 @@ class VoteController < ApplicationController
       # TODO: define some contents
     }
 
-    unauthorized! if cannot? :create, @vote
+    unless can? :create, @vote
+      logger.info "unregistered visiter voting page redirected to registration"
+      return redirect_to new_user_registration_path
+    end
   end
 
   # handles the submission of a casted vote by a voter
@@ -18,14 +23,19 @@ class VoteController < ApplicationController
       # TODO: define some contents
     }
 
-    unless @vote = Vote.create(@vote_contents)
-      logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
-      return render :status => 422
+    # not sure under what conditions this would happen since we have before_filters
+    # but we definitely want to be careful and conservative
+    unless can? :create, @vote
+      logger.info "user #{current_user.inspect} tried to cast a vote but was not authorized"
+      return :status => 403
     end
 
-    unauthorized! if cannot? :create, @vote
-
     # FIXME: add journal documentation of this event
+    unless @vote = Vote.create(@vote_contents)
+      logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
+      flash[:warn] = "There was an issue with your vote."
+      return render
+    end
   end
 
   # view a vote
@@ -80,6 +90,13 @@ class VoteController < ApplicationController
     unless @vote = Vote.first(:conditions => {:ref_code => params[:ref_code]})
       logger.warn "vote #{params[:ref_code].inspect} requested but was not found"
       return render :status => 404
+    end
+  end
+
+  def already_voted?
+    if vote = current_user.vote
+      flash[:warn] = "You have already voted. Your vote is displayed below."
+      return redirect_to show_vote_path(vote.ref_code)
     end
   end
 end

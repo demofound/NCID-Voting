@@ -1,2 +1,10 @@
 <% content_for(:title) do %>Home<% end %>
-<p>Find me in app/views/home/index.html.erb</p>
+
+<div class="row">
+    <div class="span8">
+        <!-- big vote button graphic here -->
+    </div>
+    <div class="span4">
+        <%= render :partial => "shared/testimonials", :locals => {:testimonials => @testimonials} %>
+    </div>
+</div>

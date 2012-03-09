@@ -1,0 +1,11 @@
+<ul class="testimonials unstyled">
+    <% testimonials.each do |t|%>
+        <li class="testimonial">
+            <%= image_tag(t[:user][:userpic], :class => "userpic") %>
+            <pre class="body">
+                <%= t[:body] %>
+            </pre>
+            <span class="fullname"><%= t[:user][:fullname] %></span>
+        </li>
+    <% end %>
+</ul>

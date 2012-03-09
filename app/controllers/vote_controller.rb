@@ -1,7 +1,7 @@
 class VoteController < ApplicationController
-  before_filter :login_required?
-  before_filter :vote_exists?,   :only => [:show, :update, :delete]
-  before_filter :already_voted?, :only => [:new, :create]
+  before_filter :authenticate_user!                                 # all voting activity requires a session (provided by Devise)
+  before_filter :vote_exists?,   :only => [:show, :update, :delete] # these methods require a valid vote
+  before_filter :has_not_voted?, :only => [:new, :create]           # make sure people can only vote once
 
   # renders the page where a voter will decide what vote to cast
   def new
@@ -93,8 +93,8 @@ class VoteController < ApplicationController
     end
   end
 
-  def already_voted?
-    if vote = current_user.vote
+  def has_not_voted?
+    unless vote = current_user.vote
       flash[:warn] = "You have already voted. Your vote is displayed below."
       return redirect_to show_vote_path(vote.ref_code)
     end

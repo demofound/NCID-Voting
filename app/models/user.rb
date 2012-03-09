@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
-  has_one :vote
+  has_one  :vote
+  has_many :testimonials
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
 

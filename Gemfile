@@ -12,6 +12,7 @@ gem "meta_search"
 gem "twitter-bootstrap-rails"
 gem "cancan"
 gem "omniauth"
+gem "enumerated_attribute"
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 
 # Use unicorn as the web server

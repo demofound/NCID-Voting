@@ -7,11 +7,10 @@ module NCI
       #  eg: NCI::Views::Testimonial.to_hash(some_testimonial, :metadata) and the testimonials's
       #      metadata will me merged passed back in the returned hash
       def self.to_hash(testimonial, user = testimonial.user, *args)
-
         # this is the stuff we always want to return
         hash = {
           :user => NCI::Views::User.to_hash(user),
-          :body => response.body
+          :body => testimonial.body
         }
 
         # optional hash additions
@@ -24,6 +23,8 @@ module NCI
             :state       => testimonial.state
           }
         end
+
+        return hash
       end
     end
   end

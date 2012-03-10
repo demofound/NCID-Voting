@@ -1,10 +1,14 @@
+# we're gonna override activeadmin's devise path but keep the normal path for everything else
+# it'd be weird to present the general public with /admin URLs just for that
+active_admin_devise_config = ActiveAdmin::Devise.config.merge :path => "/user"
+
 NciVote::Application.routes.draw do
   ActiveAdmin.routes(self)
 
   root :to => "home#index"
   get  "home/index"
 
-  devise_for :users, ActiveAdmin::Devise.config
+  devise_for :users, active_admin_devise_config
 
   controller :vote, :path => "/" do
     get    ":initiative_code/vote"  => :new,    :as => :new_vote

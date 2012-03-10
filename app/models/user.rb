@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
-  has_one  :vote
+  has_many :votes
   has_many :testimonials
+  has_many :initiatives
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
 
@@ -10,6 +11,11 @@ class User < ActiveRecord::Base
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
   ROLES = %w[admin voting_official voter]
+
+  def vote_for_initiative(initiative_codes)
+    initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
+    return self.votes.where(:initiative => initiative_ids).all
+  end
 
   def roles=(roles)
     return self.roles.mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum

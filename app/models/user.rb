@@ -12,9 +12,14 @@ class User < ActiveRecord::Base
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
   ROLES = %w[admin voting_official voter]
 
-  def vote_for_initiative(initiative_codes)
+  def read_vote_on_initiative(initiative_codes)
     initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
     return self.votes.where(:initiative => initiative_ids).all
+  end
+
+  def cast_vote_on_initiative(initiative_code, decision)
+    initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
+    return self.votes.create(:initiative_id => initiative_id, :decision => decision)
   end
 
   def roles=(roles)

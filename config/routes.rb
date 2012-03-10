@@ -6,7 +6,7 @@ NciVote::Application.routes.draw do
 
   devise_for :users, ActiveAdmin::Devise.config
 
-  controller :vote, :path => "/vote" do
+  controller :vote, :path => "/:initiative_code/vote" do
     get    "/cast"      => :new,    :as => :new_vote
     post   "/cast"      => :create, :as => :create_vote
     get    "/:ref_code" => :show,   :as => :show_vote

@@ -11,7 +11,6 @@ module NCI
         hash = {
           :username => user.username,
           :fullname => user.fullname,
-          :code     => user.code,
           :avatar   => user.avatar.url
         }
 

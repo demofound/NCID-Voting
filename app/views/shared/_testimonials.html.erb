@@ -1,7 +1,7 @@
 <ul class="testimonials unstyled">
     <% testimonials.each do |t|%>
         <li class="testimonial">
-            <%= image_tag(t[:user][:userpic], :class => "userpic") %>
+            <%= image_tag(t[:user][:avatar], :class => "userpic") %>
             <pre class="body">
                 <%= t[:body] %>
             </pre>

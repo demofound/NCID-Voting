@@ -12,7 +12,7 @@ module NCI
           :username => user.username,
           :fullname => user.fullname,
           :code     => user.code,
-          :userpic  => user.userpic.url
+          :avatar   => user.avatar.url
         }
 
         # optional hash additions

@@ -13,6 +13,8 @@ gem "twitter-bootstrap-rails"
 gem "cancan"
 gem "omniauth"
 gem "enumerated_attribute"
+gem "mini_magick"
+gem "carrierwave"
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 
 # Use unicorn as the web server

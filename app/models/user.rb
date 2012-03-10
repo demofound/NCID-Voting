@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   has_many :initiatives
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
+  mount_uploader :avatar, AvatarUploader
 
   validates_presence_of   :username
   validates_uniqueness_of :username, :message => "is already taken"

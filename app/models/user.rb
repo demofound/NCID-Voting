@@ -5,6 +5,11 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
 
+  validates_presence_of   :username
+  validates_uniqueness_of :username, :message => "is already taken"
+  validates_format_of     :username, :message => "must be only numbers, letters, or underscores", :with => /^\w+$/i
+  validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
+
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
 

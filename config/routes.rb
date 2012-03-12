@@ -19,4 +19,9 @@ NciVote::Application.routes.draw do
     put    "vote/:ref_code"         => :update, :as => :update_vote
     delete "vote/:ref_code"         => :delete, :as => :delete_vote
   end
+
+  controller :info, :path => "/info" do
+    get "/faq"       => :faq,       :as => :faq
+    get "/full_text" => :full_text, :as => :full_text
+  end
 end

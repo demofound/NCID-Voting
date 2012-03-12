@@ -46,4 +46,17 @@ NciVote::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  config.action_mailer.default_url_options = { :host => 'www.ncid.info' }
+
+  # FIXME: abstract this out to the system ENV so this isn't stored in the repo
+  ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :address              => "ncid.info",
+    :port                 => 587,
+    :user_name            => 'noreploy@ncid.info',
+    :password             => 'yadayada',
+    :authentication       => 'plain',
+    :enable_starttls_auto => true
+  }
 end

@@ -21,5 +21,17 @@ NciVote::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-end
 
+  config.action_mailer.default_url_options = { :host => 'localhost' }
+
+  # FIXME: abstract this out to the system ENV so this isn't stored in the repo
+  ActionMailer::Base.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :address              => "ncid.info",
+    :port                 => 587,
+    :user_name            => 'noreploy@ncid.info',
+    :password             => 'yadayada',
+    :authentication       => 'plain',
+    :enable_starttls_auto => true
+  }
+end

@@ -13,11 +13,13 @@ class User < ActiveRecord::Base
   validates_presence_of   :fullname  # no point in trying to validate internationalizable names with regex or anything
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :fullname
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
-  ROLES = %w[admin voting_official voter]
+  ROLES = [:admin, :voting_official, :voter]
+
+  before_save :set_defaults
 
   def read_vote_on_initiative(initiative_codes)
     initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
@@ -29,12 +31,8 @@ class User < ActiveRecord::Base
     return self.votes.create(:initiative_id => initiative_id, :decision => decision)
   end
 
-  def role_symbols
-    roles.map(&:to_sym)
-  end
-
   def roles=(roles)
-    return self.roles.mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+    return self.roles_mask = (roles.map(&:to_sym) & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end
 
   def roles
@@ -42,6 +40,13 @@ class User < ActiveRecord::Base
   end
 
   def role?(role)
-    return roles.include? role.to_s
+    return self.roles.include? role.to_sym
+  end
+
+  private
+
+  def set_defaults
+    # if a user is confirmed, they can vote. if not, they can't do anything priviledged
+    self.roles ||= self.confirmed_at.present? ? [:voter] : []
   end
 end

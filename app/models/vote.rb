@@ -11,7 +11,7 @@ class Vote < ActiveRecord::Base
 
   private
 
-  has_paper_trail
+  has_paper_trail :skip => PAPER_TRAIL_SKIP_ATTRIBUTES
 
   def set_defaults
     self.decision ||= false

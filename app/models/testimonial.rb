@@ -9,7 +9,7 @@ class Testimonial < ActiveRecord::Base
     return self.where(:state => :featured).order("created_at DESC").limit(count)
   end
 
-  has_paper_trail
+  has_paper_trail :skip => PAPER_TRAIL_SKIP_ATTRIBUTES
 
   private
 

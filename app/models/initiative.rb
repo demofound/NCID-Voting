@@ -10,7 +10,7 @@ class Initiative < ActiveRecord::Base
   validates_presence_of   :user_id
   validates_uniqueness_of :code, :message => "is already in use"
 
-  has_paper_trail
+  has_paper_trail :skip => PAPER_TRAIL_SKIP_ATTRIBUTES
 
   private
 

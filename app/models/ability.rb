@@ -8,8 +8,8 @@ class Ability
 
     if user.role? :admin
       can :manage, :all
-    elsif user.created_at # are they registered, in other words
-      can :create, :vote
+    elsif user.role? :voter
+      can :create, Vote
     end
 
     # default is can't do anything special for now

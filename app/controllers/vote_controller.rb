@@ -86,6 +86,7 @@ class VoteController < ApplicationController
       logger.warn "vote requested on nonexistant initiative #{params[:initiative_code]}"
       return render :status => 404
     end
+
     @initiative_contents = NCI::Views::Testimonial.to_hash(@initiative)
   end
 

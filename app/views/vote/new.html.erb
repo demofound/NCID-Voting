@@ -1,1 +1,14 @@
+<h2><%= @initiative_contents[:name] %></h2>
 
+<div class="description">
+  <%= @initiative_contents[:description] %>
+</div>
+
+<%= semantic_form_for(@vote, :url => create_vote_path(:initiative_code => @initiative_contents[:code]), :html_options => {:id => "vote"}) do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :decision, :label => "I am voting for #{@initiative_contents[:name]}" %>
+  <% end %>
+  <%= f.buttons do %>
+    <%= f.commit_button "Cast Vote" %>
+  <% end %>
+<% end %>

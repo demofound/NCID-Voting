@@ -8,6 +8,7 @@
   <%= f.inputs do %>
     <%= f.input :decision, :label => "I am voting for #{@initiative_contents[:name]}" %>
   <% end %>
+  <p class="alert alert-info">Please note that once you cast your vote, your vote is final.  You will not be able to change your vote after-the-fact.</p>
   <%= f.buttons do %>
     <%= f.commit_button "Cast Vote" %>
   <% end %>

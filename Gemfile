@@ -15,6 +15,7 @@ gem "omniauth"
 gem "enumerated_attribute"
 gem "mini_magick"
 gem "carrierwave"
+gem "paper_trail"
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 
 group :assets do

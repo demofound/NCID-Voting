@@ -9,6 +9,8 @@ class Testimonial < ActiveRecord::Base
     return self.where(:state => :featured).order("created_at DESC").limit(count)
   end
 
+  has_paper_trail
+
   private
 
   def set_defaults

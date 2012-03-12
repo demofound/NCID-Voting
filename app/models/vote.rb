@@ -11,6 +11,8 @@ class Vote < ActiveRecord::Base
 
   private
 
+  has_paper_trail
+
   def set_defaults
     self.decision ||= false
     self.ref_code ||= NCI::Utils::RefCode.generate(10)

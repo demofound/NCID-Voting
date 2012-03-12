@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
   ROLES = [:admin, :voting_official, :voter]
 
+  has_paper_trail :only => [:roles_mask, :username, :fullname, :email]
+
   before_save :set_defaults
 
   def read_vote_on_initiative(initiative_codes)

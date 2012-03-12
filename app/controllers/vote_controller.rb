@@ -10,7 +10,7 @@ class VoteController < ApplicationController
     @vote = @vote || Vote.new
 
     unless can? :create, @vote
-      logger.info "unregistered visiter voting page redirected to registration"
+      logger.info "unregistered visit to the voting page was redirected to registration"
       return redirect_to new_user_registration_path
     end
 
@@ -23,7 +23,7 @@ class VoteController < ApplicationController
     # but we definitely want to be careful and conservative
     unless can? :create, @vote
       logger.info "user #{current_user.inspect} tried to cast a vote but was not authorized"
-      return :status => 403
+      return redirect_to new_user_registration_path
     end
 
     # FIXME: add journal documentation of this event

@@ -17,6 +17,10 @@ gem "mini_magick"
 gem "carrierwave"
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 
+group :assets do
+  gem 'coffee-rails'
+end
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

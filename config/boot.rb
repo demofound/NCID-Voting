@@ -9,5 +9,5 @@ APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../")
 #  in general I don't like sending 'live' activerecord objects to views, so
 #  I have created these hash generators to create simple hashes for use in views
 Dir.glob(APP_ROOT + '/lib/nci/views/*.rb') {|lib| require lib }
-
+require APP_ROOT + '/lib/nci/utils/ref_code.rb'
 require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])

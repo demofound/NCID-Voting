@@ -87,7 +87,7 @@ class VoteController < ApplicationController
       return render :status => 404
     end
 
-    @initiative_contents = NCI::Views::Testimonial.to_hash(@initiative)
+    @initiative_contents = NCI::Views::Initiative.to_hash(@initiative)
   end
 
   def attempt_to_get_vote
@@ -106,7 +106,7 @@ class VoteController < ApplicationController
   def has_not_voted?
     if @vote
       flash[:warn] = "You have already voted. Your vote is displayed below."
-      return redirect_to show_vote_path(vote.ref_code)
+      return redirect_to show_vote_path(@vote.ref_code)
     end
   end
 end

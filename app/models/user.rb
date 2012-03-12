@@ -21,12 +21,16 @@ class User < ActiveRecord::Base
 
   def read_vote_on_initiative(initiative_codes)
     initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
-    return self.votes.where(:initiative => initiative_ids).all
+    return self.votes.where(:initiative_id => initiative_ids).first
   end
 
   def cast_vote_on_initiative(initiative_code, decision)
     initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
     return self.votes.create(:initiative_id => initiative_id, :decision => decision)
+  end
+
+  def role_symbols
+    roles.map(&:to_sym)
   end
 
   def roles=(roles)
@@ -37,7 +41,7 @@ class User < ActiveRecord::Base
     return ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
   end
 
-  def role?
+  def role?(role)
     return roles.include? role.to_s
   end
 end

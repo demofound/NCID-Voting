@@ -1,4 +1,6 @@
 class Vote < ActiveRecord::Base
+  include NCI::Utils::RefCode
+
   belongs_to :user
   belongs_to :initiative
 
@@ -11,5 +13,6 @@ class Vote < ActiveRecord::Base
 
   def set_defaults
     self.decision ||= false
+    self.ref_code ||= NCI::Utils::RefCode.generate(10)
   end
 end

@@ -17,7 +17,7 @@ module NCI
 
         # this stuff is mostly useful for administrative purposes
         if args.include? :metadata
-          hash.merge :metadata => {
+          hash.merge! :metadata => {
             :created_at  => testimonial.created_at,
             :modified_at => testimonial.modified_at,
             :state       => testimonial.state

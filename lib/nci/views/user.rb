@@ -17,11 +17,11 @@ module NCI
         # optional hash additions
 
         if args.include? :vote
-          hash.merge :vote => user.vote
+          hash.merge! :vote => user.vote
         end
 
         if args.include? :testimonials
-          hash.merge :testimonials => user.testimonials.map{ |t| NCI::Views::Testimonial.to_hash(t, user) }
+          hash.merge! :testimonials => user.testimonials.map{ |t| NCI::Views::Testimonial.to_hash(t, user) }
         end
 
         return hash

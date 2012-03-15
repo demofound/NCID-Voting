@@ -1,7 +1,9 @@
 ActiveAdmin.setup do |config|
 
+  # ensure that any user accessing activeadmin areas has the admin role
   config.before_filter :check_admin_role
 
+  # FIXME: we will no doubt need even finer-grained ACLs inside the admin area soon...
   def check_admin_role
     return if current_user.role?(:admin)
     flash[:notice] = "You need to be an admin to access this part of the application."

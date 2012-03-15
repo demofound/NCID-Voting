@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   has_many :votes
   has_many :testimonials
   has_many :initiatives
+  has_one  :user_meta
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader

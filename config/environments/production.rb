@@ -49,13 +49,12 @@ NciVote::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'www.ncid.info' }
 
-  # FIXME: abstract this out to the system ENV so this isn't stored in the repo
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     :address              => "ncid.info",
     :port                 => 587,
-    :user_name            => 'noreploy@ncid.info',
-    :password             => 'yadayada',
+    :user_name            => 'noreply@ncid.info',
+    :password             => ENV['NCID_VOTE_EMAIL_PASSWORD'],
     :authentication       => 'plain',
     :enable_starttls_auto => true
   }

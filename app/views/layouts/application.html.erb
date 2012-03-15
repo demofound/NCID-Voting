@@ -3,7 +3,7 @@
   <head>
     <%= render :partial => "shared/html_head" %>
   </head>
-  <body>
+  <body class="<%= params[:controller].to_s %>">
     <%= render :partial => "shared/top_menu" %>
     <div class="container">
       <div class="content">

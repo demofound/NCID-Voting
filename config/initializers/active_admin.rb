@@ -1,5 +1,13 @@
 ActiveAdmin.setup do |config|
 
+  config.before_filter :check_admin_role
+
+  def check_admin_role
+    return if current_user.role?(:admin)
+    flash[:notice] = "You need to be an admin to access this part of the application."
+    redirect_to root_path
+  end
+
   # == Site Title
   #
   # Set the title that is displayed on the main layout

@@ -10,7 +10,7 @@ module NCI
         # this is the base hash that we will always return
         hash = {
           :username => user.username,
-          :fullname => user.fullname,
+          :fullname => user.meta.fullname,
           :avatar   => user.avatar.url
         }
 

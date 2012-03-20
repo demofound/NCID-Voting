@@ -5,6 +5,9 @@ class UserMeta < ActiveRecord::Base
   attr_encrypted :ssn,            :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
   attr_encrypted :street_address, :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
 
+  # some of these attributes are encrypted but eh, let's store their changes anyway
+  has_paper_trail
+
   before_validation :derive_country
 
   # if we have an associated state and if that associated state requires the fields in question

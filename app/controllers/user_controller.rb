@@ -34,7 +34,7 @@ class UserController < ApplicationController
   # in order to collect user's meta information they have to be registered, logged in, but missing their metadata
   def login_minus_usermeta_required
     unless current_user.present? && current_user.needs_meta?
-      return redirect_to new_user_session
+      return redirect_to new_user_session_path
     end
   end
 

@@ -1,14 +1,23 @@
 class UserController < ApplicationController
-  before_filter :login_minus_usermeta_required, :only => [:collect_meta, :collect_meta_do]
-  before_filter :get_state,                     :only => [:collect_meta, :collect_meta_do]
-  before_filter :get_user,                      :only => [:collect_meta, :collect_meta_do]
+  before_filter :login_minus_usermeta_required, :only => [:meta_domestic, :meta_do, :meta_foreign]
+  before_filter :get_state,                     :only => [:meta_domestic, :meta_do, :meta_foreign]
+  before_filter :get_user_meta,                 :only => [:meta_domestic, :meta_do, :meta_foreign]
 
   layout "active_admin_esque"
 
-  def collect_meta
+  def choose_location
+    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }
   end
 
-  def collect_meta_do
+  def meta_domestic
+    return render "collect_meta"
+  end
+
+  def meta_foreign
+    return render "collect_meta"
+  end
+
+  def meta_do
     user_meta_data = {
       :fullname       => params[:user][:user_meta][:fullname],
       :street_address => params[:user][:user_meta][:street_address],
@@ -23,7 +32,7 @@ class UserController < ApplicationController
       logger.info "unable to save user_meta #{user_meta_data.inspect} for user #{current_user.inspect}"
 
       # rerender the form
-      return render :collect_meta
+      return render :meta
     end
 
     # TODO: try to locate the user in the voter DB
@@ -39,15 +48,15 @@ class UserController < ApplicationController
   end
 
   def get_user_meta
-    @user_meta = current_user.user_meta
+    @user_meta = current_user.user_meta || UserMeta.new
   end
 
   def get_state
     # this param will either come from the form post or from the get params
-    state_code  = params[:state_code] || params[:user][:state_code]
+    state_code  = params[:user].present? ? params[:user][:state_code] : params[:state_code]
 
-    # do we have a real state?
-    if state = State.first(:conditions => {:code => state_code})
+    # do we have a real state and does it have required fields?
+    if state = State.first(:conditions => {:code => state_code}) and state.required_fields.present?
       # state currently means domestic so we defer the requirements to the State
       @state = {
         :required_fields => state.required_fields,
@@ -55,6 +64,7 @@ class UserController < ApplicationController
       }
     else
       # no state currently means foreign, so we'll just collect address and fullname by default
+      # or... if a state has no required fields we will fall back on asking for everything
       @state = {
         :required_fields => [:address, :fullname]
       }

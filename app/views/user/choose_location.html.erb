@@ -1,0 +1,16 @@
+<%# not really login but we're just invoking the active admin css style here %>
+
+<h2>Choose Your Location</h2>
+<div id="login" class="row-fluid">
+  <div class="span6">
+    <h3>United States</h3>
+    <% @states.each do |s| %>
+      <%= link_to s[:name], meta_domestic_user_path(:state_code => s[:code]) %><br/>
+    <% end %>
+  </div>
+  <div class="span6">
+    <h3>Non-US</h3>
+    <%= link_to "Continue", meta_foreign_user_path %>
+  </div>
+</div>
+

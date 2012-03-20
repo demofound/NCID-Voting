@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   def needs_meta?
-    return current_user.user_meta.nil?
+    return self.user_meta.nil?
   end
 
   private

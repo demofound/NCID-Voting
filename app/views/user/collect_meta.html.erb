@@ -4,24 +4,24 @@
 
   <p>We need to collect some information from you so that we can find you in your state's voter registration database.</p>
 
-  <%= semantic_form_for(@user_meta, :as => @user_meta, :url => collect_meta_do_path) do |f| %>
-    <%= f.input :state_code, :type => :hidden, :value => @state[:code] %>
+  <%= semantic_form_for(@user_meta, :as => @user_meta, :url => meta_do_user_path) do |f| %>
+    <input type="hidden" name="user[state_code" type="hidden" value="<%= @state[:code] %>" />
 
     <% if @state[:required_fields].include? :fullname %>
-      <%= f.fullname do %>
+      <%= f.inputs :class => "fullname" do %>
         <%= f.input :fullname, :label => "Full Name" %>
       <% end %>
     <% end %>
 
     <% if @state[:required_fields].include? :address %>
-      <%= f.address do %>
+      <%= f.inputs :class => "address" do %>
         <%= f.input :street_address %>
         <%= f.input :postal_code %>
       <% end %>
     <% end %>
 
     <% if @state[:required_fields].include? :ssn_last_four %>
-      <%= f.ssn do %>
+      <%= f.inputs :class => "ssn" do %>
         <%= f.input :ssn, :type => :password, :label => "Last four digits of your Social Security Number" %>
       <% end %>
     <% end %>

@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :username, :message => "is already taken"
   validates_format_of     :username, :message => "must be only numbers, letters, or underscores", :with => /^\w+$/i
   validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
-  validates_presence_of   :fullname  # no point in trying to validate internationalizable names with regex or anything
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :fullname
@@ -44,6 +43,10 @@ class User < ActiveRecord::Base
 
   def role?(role)
     return self.roles.include? role.to_sym
+  end
+
+  def needs_meta?
+    return current_user.user_meta.nil?
   end
 
   private

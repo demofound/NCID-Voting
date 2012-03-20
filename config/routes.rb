@@ -12,6 +12,12 @@ NciVote::Application.routes.draw do
 
   devise_for :users, active_admin_devise_config
 
+  controller :user, :path => "/" do
+    get    "user/:state_code/registration"  => :collect_meta,    :as => :collect_meta_domestic_user
+    get    "user/intl/registration"         => :collect_meta,    :as => :collect_meta_foreign_user
+    post   "user/registration"              => :collect_meta_do, :as => :collect_meta_do_user
+  end
+
   controller :vote, :path => "/" do
     get    ":initiative_code/vote"  => :new,    :as => :new_vote
     post   ":initiative_code/vote"  => :create, :as => :create_vote

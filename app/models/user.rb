@@ -33,8 +33,19 @@ class User < ActiveRecord::Base
     return self.votes.create(:initiative_id => initiative_id, :decision => decision)
   end
 
+  # sets the roleset, overwriting whatever is currently assigned
   def roles=(roles)
     return self.roles_mask = (roles.map(&:to_sym) & ROLES).map { |r| 2**ROLES.index(r) }.sum
+  end
+
+  # adds new roles to existing roleset
+  def add_roles(roles)
+    return self.roles = (self.roles + Array(roles)).uniq
+  end
+
+  # removes roles from an existing roleset
+  def remove_roles(roles)
+    return self.roles = (self.roles - Array(roles))
   end
 
   def roles

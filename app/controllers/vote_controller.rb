@@ -1,6 +1,6 @@
 class VoteController < ApplicationController
   before_filter :authenticate_user!                                      # all voting activity requires a session (provided by Devise)
-  before_filter :initiative_exists?                                      # all voting requires an initiative as the voting subject
+  before_filter :initiative_exists?, :only => [:new, :create]            # voting requires an initiative as the voting subject
   before_filter :attempt_to_get_vote                                     # a vote may or may not exist but all actions should check
   before_filter :has_not_voted?,     :only => [:new, :create]            # make sure people can only vote once
   before_filter :vote_exists?,       :only => [:show, :update, :destroy] # these methods require a valid vote
@@ -9,7 +9,7 @@ class VoteController < ApplicationController
   def new
     @vote = @vote || Vote.new
 
-    unless can? :create, @vote
+    unless can? :create, Vote
       logger.info "unregistered visit to the voting page was redirected to registration"
       return redirect_to new_user_registration_path
     end
@@ -21,13 +21,13 @@ class VoteController < ApplicationController
   def create
     # not sure under what conditions this would happen since we have before_filters
     # but we definitely want to be careful and conservative
-    unless can? :create, @vote
+    unless can? :create, Vote
       logger.info "user #{current_user.inspect} tried to cast a vote but was not authorized"
       return redirect_to new_user_registration_path
     end
 
     # FIXME: add journal documentation of this event
-    unless @vote = current_user.votes.cast_vote_on_initiative(@initiative.id, params[:decision])
+    unless @vote = current_user.cast_vote_on_initiative(@initiative.code, params[:decision])
       logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
       flash[:warn] = "There was an issue with your vote."
       return render :new
@@ -40,20 +40,14 @@ class VoteController < ApplicationController
   # NOTE: vote is automatically found via a before filter
   def show
     # FIXME: verify that can is properly checking ownership of the vote... magical
-    unless user.can? :read, @vote
-      logger.warn "user #{current_user.inspect} attempted to read vote #{params[:ref_code].inspect} but was not authorized to do so"
-      unauthorized!
-    end
+    authorize! :read, @vote
   end
 
   # modify a vote
   # NOTE: vote is automatically found via a before filter
   def update
     # FIXME: verify that can is properly checking ownership of the vote... magical
-    unless user.can? :update, @vote
-      logger.warn "user #{current_user.inspect} attempted to update vote #{params[:ref_code].inspect} but was not authorized to do so"
-      unauthorized!
-    end
+    authorize! :update, @vote
 
     # FIXME: add journal documentation of this event
     unless @vote.update_attributes!(@vote_contents)
@@ -67,10 +61,7 @@ class VoteController < ApplicationController
   # nuke a vote
   # NOTE: vote is automatically found via a before filter
   def destroy
-    unless user.can? :destroy, @vote
-      logger.warn "user #{current_user.inspect} attempted to destroy vote #{params[:ref_code].inspect} but was not authorized to do so"
-      unauthorized!
-    end
+    authorize! :destroy, @vote
 
     # FIXME: add journal documentation of this event
     unless @vote.destroy
@@ -91,7 +82,13 @@ class VoteController < ApplicationController
   end
 
   def attempt_to_get_vote
-    @vote = current_user.read_vote_on_initiative(@initiative.id)
+    if params[:ref_code]
+      return @vote = Vote.first(:conditions => {:ref_code => params[:ref_code]})
+    end
+
+    if @initiative
+      @vote = current_user.read_vote_on_initiative(@initiative.code)
+    end
   end
 
   def vote_exists?

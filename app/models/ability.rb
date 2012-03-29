@@ -8,8 +8,14 @@ class Ability
 
     if user.role? :admin
       can :manage, :all
-    elsif user.role? :voter
-      can :create, Vote
+    else
+      if user.role? :voter
+        can :create, Vote
+      end
+
+      can :read, Vote do |vote|
+        user.id == vote.user_id
+      end
     end
 
     # default is can't do anything special for now

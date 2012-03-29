@@ -4,6 +4,7 @@ module NCI
       # pass in an activerecord initiative object
       def self.to_hash(initiative, *args)
         return {
+          :id          => initiative.id,
           :name        => initiative.name,
           :description => initiative.description,
           :code        => initiative.code

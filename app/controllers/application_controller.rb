@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :redirect_if_user_meta_needed
+  before_filter :pass_forward_url
 
   layout :layout_by_resource
 
@@ -32,7 +33,13 @@ class ApplicationController < ActionController::Base
     end
 
     if current_user && current_user.needs_meta?
-      return redirect_to choose_location_user_path
+      # forward_url allows us to hand the original URL that brought us here down the chain
+      return redirect_to choose_location_user_path(:forward_url => request.path)
     end
+  end
+
+  def pass_forward_url
+    # if we've been handed a forward_url, make it available to the views or whomever to handle
+    @forward_url = params[:forward_url]
   end
 end

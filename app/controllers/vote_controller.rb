@@ -17,7 +17,7 @@ class VoteController < ApplicationController
     @vote_contents = NCI::Views::Vote.to_hash(@vote)
   end
 
-  # handles the submission of a casted vote by a voter
+  # handles the submission of a cast vote by a voter
   def create
     # not sure under what conditions this would happen since we have before_filters
     # but we definitely want to be careful and conservative

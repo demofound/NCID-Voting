@@ -12,8 +12,8 @@ class UserMeta < ActiveRecord::Base
 
   # if we have an associated state and if that associated state requires the fields in question
   validates_presence_of   :ssn,            :if => Proc.new { |um| um.state_id && um.state.required_fields.include?(:ssn_last_four)}
-  validates_length_of     :ssn,            :is => 4 # we only collect the last four digits
-  validates_format_of     :ssn,            :with => /^[0-9]+$/
+  validates_length_of     :ssn,            :is => 4,            :allow_nil => true # we only collect the last four digits
+  validates_format_of     :ssn,            :with => /^[0-9]+$/, :allow_nil => true
   validates_presence_of   :street_address, :if => Proc.new { |um| um.state_id && um.state.required_fields.include?(:address) }
   validates_presence_of   :postal_code,    :if => Proc.new { |um| um.state_id && um.state.required_fields.include?(:address) }
   validates_presence_of   :country_code,   :if => Proc.new { |um| um.state_id && um.state.required_fields.include?(:address) }
@@ -27,7 +27,7 @@ class UserMeta < ActiveRecord::Base
   def derive_country
     # right now we'll assume that the existance of a state record indicates the address is in the US
     if self.state.present?
-      self.country ||= "us"
+      self.country_code ||= "US"
     end
   end
 end

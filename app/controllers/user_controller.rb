@@ -32,7 +32,7 @@ class UserController < ApplicationController
       logger.info "unable to save user_meta #{user_meta_data.inspect} for user #{current_user.inspect} because #{@user_meta.errors.inspect}"
 
       # rerender the form
-      return render :meta
+      return render :collect_meta
     end
 
     # TODO: try to locate the user in the voter DB

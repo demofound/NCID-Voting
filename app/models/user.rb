@@ -23,6 +23,10 @@ class User < ActiveRecord::Base
 
   before_save :set_defaults
 
+  def self.recent(count)
+    return User.limit(count).order("confirmed_at DESC").all
+  end
+
   def read_vote_on_initiative(initiative_codes)
     initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
     return self.votes.where(:initiative_id => initiative_ids).first

@@ -14,6 +14,10 @@ class Initiative < ActiveRecord::Base
 
   private
 
+  def self.recent(count)
+    return Initiative.limit(count).order("created_at DESC").all
+  end
+
   def set_defaults
     self.start_at ||= Time.now
   end

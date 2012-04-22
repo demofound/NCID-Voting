@@ -1,9 +1,10 @@
 ActiveAdmin.register User do
   index do
-    column :email
+    column "Email" do |user|
+      link_to user.email, admin_user_path(user)
+    end
     column :username
     column :confirmed_at
-    default_actions
   end
 
   show :as => :block do |user|

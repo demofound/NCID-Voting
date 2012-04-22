@@ -11,6 +11,16 @@ ActiveAdmin::Dashboards.build do
     end
   end
 
+  section "Recent Initiatives" do
+    table_for Initiative.recent(5) do
+      column :name do |initiative|
+        link_to initiative.name, [:admin, initiative]
+      end
+      column :start_at
+      column :end_at
+    end
+  end
+
   # Define your dashboard sections here. Each block will be
   # rendered on the dashboard in the context of the view. So just
   # return the content which you would like to display.

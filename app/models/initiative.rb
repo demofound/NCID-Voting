@@ -12,6 +12,8 @@ class Initiative < ActiveRecord::Base
 
   has_paper_trail :skip => PAPER_TRAIL_SKIP_ATTRIBUTES
 
+  attr_protected :creator
+
   private
 
   def self.recent(count)

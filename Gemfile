@@ -17,6 +17,7 @@ gem "mini_magick"
 gem "carrierwave"
 gem "paper_trail"
 gem "attr_encrypted"
+gem "diffy"
 
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 

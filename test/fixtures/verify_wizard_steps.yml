@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  instructions: MyText
+  order: 1
+  state_id: 1
+
+two:
+  instructions: MyText
+  order: 1
+  state_id: 1

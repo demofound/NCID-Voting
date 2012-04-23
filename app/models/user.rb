@@ -1,8 +1,10 @@
 class User < ActiveRecord::Base
-  has_many :votes
-  has_many :testimonials
-  has_many :initiatives
-  has_one  :user_meta
+  has_many   :votes
+  has_many   :testimonials
+  has_many   :initiatives
+  has_one    :user_meta
+  has_many   :verified_users, :class_name => "User", :foreign_key => "verifier_id"
+  belongs_to :verifier,       :class_name => "User", :foreign_key => "verifier_id"
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader
@@ -22,6 +24,10 @@ class User < ActiveRecord::Base
   has_paper_trail :only => [:roles_mask, :username, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
 
   before_save :set_defaults
+
+  def locked?
+    return self.locked.present?
+  end
 
   def self.recent(count)
     return User.limit(count).order("confirmed_at DESC").all

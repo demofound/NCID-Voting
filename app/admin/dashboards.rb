@@ -1,6 +1,6 @@
 ActiveAdmin::Dashboards.build do
 
-  section "Recent Users" do
+  section "Users Requiring Verification" do
     table_for User.recent(5) do
       column :email do |user|
         link_to user.email, [:admin, user]

@@ -7,6 +7,10 @@ ActiveAdmin.register User do
     column :confirmed_at
   end
 
+  member_action :verify, :method => :get, :as => :block do
+
+  end
+
   show :as => :block do |user|
     user_meta = user.user_meta
 
@@ -21,7 +25,7 @@ ActiveAdmin.register User do
             "Username"
           end
           th do
-            "Confirmed At"
+            "Registered At"
           end
           if user_meta
             th do

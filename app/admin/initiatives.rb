@@ -86,6 +86,7 @@ ActiveAdmin.register Initiative do
             "Changes"
           end
         end
+
         # FIXME: at some point we will probably want to paginate this
         versions.each_with_index do |v,i|
           tr do

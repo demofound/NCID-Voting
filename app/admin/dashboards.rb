@@ -1,13 +1,15 @@
 ActiveAdmin::Dashboards.build do
 
   section "Users Requiring Verification" do
-    table_for User.recent(5) do
+    table_for User.recent(20, {:verified_at => nil}) do
       column :email do |user|
         link_to user.email, [:admin, user]
       end
       column
       column :username
-      column :confirmed_at
+      # confirmed_at -> "registered at" label is to try to avoid confusion with verified_at
+      column "Registered At", :confirmed_at
+      column :verified_at
     end
   end
 

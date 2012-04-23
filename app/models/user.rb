@@ -62,8 +62,8 @@ class User < ActiveRecord::Base
     return self.verified_at.present?
   end
 
-  def self.recent(count)
-    return User.limit(count).order("confirmed_at DESC").all
+  def self.recent(count, conditions = {})
+    return User.limit(count).order("confirmed_at DESC").all(:conditions => conditions)
   end
 
   def read_vote_on_initiative(initiative_codes)

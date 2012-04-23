@@ -25,8 +25,41 @@ class User < ActiveRecord::Base
 
   before_save :set_defaults
 
+  # basically begins the verification process - claims the user by the admin and
+  # prevents access by other admins
+  def lock!
+    return false if self.locked?                             # already locked?
+    return false if self.verifier.present?                   # already claimed?
+    return false unless self.verified_at.nil?                # already verified?
+
+    return self.update_attributes!(:verifier_id => current_user.id, :locked => true)
+  end
+
+  # verification can only occur given an admin has locked/claimed the user
+  def verify!
+    return false unless self.locked?                         # gotta be locked (ie. someone's done work to verify us)
+    return false unless self.verified_at.nil?                # can't already be verified
+    return false unless self.verifier_id == current_user.id  # gotta be the currently active user
+
+    return self.update_attributes!(:verified_at => Time.now)
+  end
+
+  # basically unlocking is like saying "I'm abandoning my verification of this user",
+  # allowing other admins to verify
+  def unlock!
+    return false unless self.locked?                         # gotta be locked
+    return false unless self.verified_at.nil?                # can't already be verified
+    return false unless self.verifier_id == current_user.id  # gotta be the currently active user
+
+    return self.update_attributes!(:locked => false, :verifier_id => nil)
+  end
+
   def locked?
     return self.locked.present?
+  end
+
+  def verified?
+    return self.verified_at.present?
   end
 
   def self.recent(count)

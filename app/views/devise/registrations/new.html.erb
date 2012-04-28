@@ -1,19 +1,4 @@
 <%# not really login but we're just invoking the active admin css style here %>
 <div id="login">
-  <h2>Sign up</h2>
-
-  <%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-    <%= f.inputs do %>
-      <%= f.input :username %>
-      <%= f.input :email %>
-      <%= f.input :password %>
-      <%= f.input :password_confirmation %>
-    <% end %>
-    <%= f.buttons do %>
-      <%= f.commit_button "Create Account" %>
-    <% end %>
-  <% end %>
-
-  <%= render "links" %>
-
+  <%= render :partial => "register" %>
 </div>

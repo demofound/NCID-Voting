@@ -1,7 +1,7 @@
 <%= stylesheet_link_tag "verification" %>
 <%= javascript_include_tag "verification" %>
 
-<h2>Voter information provided by <%= @user.email %></h2>
+<h2>Voter information provided by <%= @certifyee.email %></h2>
 <table class="index_table">
   <tr>
     <th>Full Name</th>
@@ -15,15 +15,15 @@
     <th>SSN</th>
   </tr>
   <tr>
-    <td><%= @user_meta.fullname %></td>
-    <td><%= @user.username %></td>
-    <td><%= @user.email %></td>
-    <td><%= @user_meta.street_address %></td>
-    <td><%= @user_meta.state.name %></td>
-    <td><%= @user_meta.city %></td>
-    <td><%= @user_meta.postal_code %></td>
-    <td><%= @user_meta.country_code %></td>
-    <td><%= @user_meta.ssn %></td>
+    <td><%= @certifyee_meta.fullname %></td>
+    <td><%= @certifyee.username %></td>
+    <td><%= @certifyee.email %></td>
+    <td><%= @certifyee_meta.street_address %></td>
+    <td><%= @certifyee_meta.state.name %></td>
+    <td><%= @certifyee_meta.city %></td>
+    <td><%= @certifyee_meta.postal_code %></td>
+    <td><%= @certifyee_meta.country_code %></td>
+    <td><%= @certifyee_meta.ssn %></td>
   </tr>
 </table>
 <br/>
@@ -46,16 +46,16 @@
     <% end %>
     <li class="step hidden verify">
       <h3>There are no more steps. You should now be ready to decide on the eligibility of the voter to vote.</h3>
-      <form id="verify" action="" method="post">
-        <label for="verified">Given the information provided by the voter I certify that the voter
-        <select name="verified" id="verified">
+      <%= form_for @certifyee, :url => certify_do_admin_user_path(@certifyee), :method => :post do |f| %>
+        <label for="certification">Given the information provided by the voter I certify that the voter
+        <select name="certification" id="certification">
           <option value="false">is not</option>
           <option value="true">is</option>
         </select>
         registered and eligible to vote.</label><br/><br/>
         <a href="javascript://" class="back">Back</a>&nbsp;
         <input type="submit" class="certify" name="certify" value="Certify" />
-      </form>
+      <% end %>
     </li>
   </ul>
 </div>

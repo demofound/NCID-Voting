@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at, :certification
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
     return false unless self.certified_at.nil?                # can't already be certified
     return false unless self.certifier_id == certifier.id  # gotta be the currently active user
 
-    return self.update_attributes!(:certified_at => Time.now, :certification => eligible)
+    return self.update_attributes!(:certified_at => Time.now, :certification => eligible, :locked => false)
   end
 
   # basically unlocking is like saying "I'm abandoning my certification of this user",
@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   # otherwise it just checks to see if the user is locked period
   def locked?(certifier = nil)
     if certifier
-      return self.certifier_id != certifier.id
+      return self.certifier_id.present? && self.certifier_id != certifier.id
     end
 
     return self.locked.present?
@@ -67,6 +67,11 @@ class User < ActiveRecord::Base
 
   def certified?
     return self.certified_at.present?
+  end
+
+  # no sense in trying to certify people who haven't provided their meta
+  def needs_certification?
+    return !self.certified? && self.user_meta.present?
   end
 
   def self.recent(count, conditions = {})

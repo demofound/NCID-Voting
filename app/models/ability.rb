@@ -9,6 +9,10 @@ class Ability
     if user.role? :admin
       can :manage, :all
     else
+      if user.role? :certifier
+        can :certify, User
+      end
+
       if user.role? :voter
         can :create, Vote
       end

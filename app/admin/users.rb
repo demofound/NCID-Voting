@@ -1,4 +1,9 @@
 ActiveAdmin.register User do
+  actions :all, :except => [:destroy,:edit,:new]
+  action_item :only => :show do
+    link_to "Verify", verify_admin_user_path(user)
+  end
+
   index do
     column "Email" do |user|
       link_to user.email, admin_user_path(user)
@@ -11,11 +16,10 @@ ActiveAdmin.register User do
 
   end
 
-  show :as => :block do |user|
+  show :as => :block, :title => :email do |user|
     user_meta = user.user_meta
 
     div :for => user do
-      h2 auto_link ("#{user.email} (#{user_meta ? user_meta.fullname : ''})")
       table :class => "index_table" do
         tr do
           th do

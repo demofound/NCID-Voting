@@ -10,9 +10,8 @@ ActiveAdmin.register Initiative do
     column :code
   end
 
-  show :as => :block do |initiative|
+  show :as => :block, :title => :name do |initiative|
     div :for => initiative do
-      h2 auto_link "#{initiative.name}"
       table :class => "index_table" do
         tr do
           th :colspan => 2 do

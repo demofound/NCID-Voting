@@ -1,14 +1,14 @@
 ActiveAdmin::Dashboards.build do
-  section "Users Requiring Verification" do
-    table_for User.recent(20, {:verified_at => nil}) do
+  section "Users Requiring Certification" do
+    table_for User.recent(20, {:certified_at => nil}) do
       column "" do |user|
-        link_to "verify", verify_admin_user_path(user)
+        link_to "certify", certify_admin_user_path(user)
       end
       column :email
       column :username do |user|
         link_to user.username, [:admin, user]
       end
-      # confirmed_at -> "registered at" label is to try to avoid confusion with verified_at
+      # confirmed_at -> "registered at" label is to try to avoid confusion with certified_at
       column "Registered At", :confirmed_at
       column :state do |user|
         (meta = user.user_meta) ? meta.state.name : ""

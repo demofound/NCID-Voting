@@ -1,6 +1,6 @@
 class State < ActiveRecord::Base
   has_many :user_metas
-  has_many :verify_wizard, :class_name => "VerifyWizardStep", :order => "order_index ASC"
+  has_many :certify_wizard, :class_name => "CertifyWizardStep", :order => "order_index ASC"
 
   validates_presence_of :name
   validates_presence_of :code

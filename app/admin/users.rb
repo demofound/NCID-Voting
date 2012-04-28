@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   actions :all, :except => [:destroy,:edit,:new]
   action_item :only => :show do
-    link_to "Verify", verify_admin_user_path(user)
+    link_to "Certify", certify_admin_user_path(user)
   end
 
   index do
@@ -10,15 +10,23 @@ ActiveAdmin.register User do
     end
     column :username
     column :confirmed_at
+    column :certified_at
   end
 
-  member_action :verify, :method => :get, :as => :block do
+  member_action :certify, :method => :get, :as => :block do
     # not a fan of sending full-on active record objects to the view but
     # it's par for the course here in activeadmin land
-    @user  = User.find(params[:id])
+    @user = User.find(params[:id])
+
+    if @user.locked?(current_user)
+      return render :text => "this user is currently locked by #{@user.certifier.email}"
+    end
+
+    @user.lock!(current_user)
+
     @user_meta = @user.user_meta
     @state = @user_meta.state
-    @steps = @state.verify_wizard
+    @steps = @state.certify_wizard
   end
 
   show :as => :block, :title => :email do |user|

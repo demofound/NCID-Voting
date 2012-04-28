@@ -1,7 +1,7 @@
 ActiveAdmin.register State do
   actions :all, :except => [:destroy,:edit,:new]
   action_item :only => :show do
-    link_to "New Verification Wizard Step", new_admin_verify_wizard_step_path
+    link_to "New Certification Wizard Step", new_admin_certify_wizard_step_path
   end
 
   index do
@@ -12,10 +12,10 @@ ActiveAdmin.register State do
 
   show :as => :block, :title => :name do |state|
     div :for => state do
-      h3 "Verification Wizard Steps"
-      unless steps = state.verify_wizard and steps.present?
+      h3 "Certification Wizard Steps"
+      unless steps = state.certify_wizard and steps.present?
         div do
-          raw "No verification steps have been created for #{state.name}. You can #{link_to 'create a step', new_admin_verify_wizard_step_path}."
+          raw "No certification steps have been created for #{state.name}. You can #{link_to 'create a step', new_admin_certify_wizard_step_path}."
         end
       else
         table :class => "index_table" do
@@ -33,7 +33,7 @@ ActiveAdmin.register State do
           steps.each do |step|
             tr do
               td do
-                link_to "edit", admin_verify_wizard_step_path(step)
+                link_to "edit", edit_admin_certify_wizard_step_path(step)
               end
               td do
                 step.order_index
@@ -48,7 +48,7 @@ ActiveAdmin.register State do
     end
   end
 
-  member_action :new_verify_wizard_step do
+  member_action :new_certify_wizard_step do
 
   end
 end

@@ -3,8 +3,8 @@ class User < ActiveRecord::Base
   has_many   :testimonials
   has_many   :initiatives
   has_one    :user_meta
-  has_many   :verified_users, :class_name => "User", :foreign_key => "verifier_id"
-  belongs_to :verifier,       :class_name => "User", :foreign_key => "verifier_id"
+  has_many   :certified_users, :class_name => "User", :foreign_key => "certifier_id"
+  belongs_to :certifier,       :class_name => "User", :foreign_key => "certifier_id"
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader
@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :username
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
@@ -25,41 +25,48 @@ class User < ActiveRecord::Base
 
   before_save :set_defaults
 
-  # basically begins the verification process - claims the user by the admin and
+  # basically begins the certification process - claims the user by the admin and
   # prevents access by other admins
-  def lock!
-    return false if self.locked?                             # already locked?
-    return false if self.verifier.present?                   # already claimed?
-    return false unless self.verified_at.nil?                # already verified?
+  def lock!(certifier)
+    return false if self.locked?                              # already locked?
+    return false if self.certifier.present?                   # already claimed?
+    return false unless self.certified_at.nil?                # already certified?
 
-    return self.update_attributes!(:verifier_id => current_user.id, :locked => true)
+    return self.update_attributes!(:certifier_id => certifier.id, :locked => true)
   end
 
-  # verification can only occur given an admin has locked/claimed the user
-  def verify!
-    return false unless self.locked?                         # gotta be locked (ie. someone's done work to verify us)
-    return false unless self.verified_at.nil?                # can't already be verified
-    return false unless self.verifier_id == current_user.id  # gotta be the currently active user
+  # certification can only occur given an admin has locked/claimed the user
+  # - should pass in true if the certification is affirmative for eligibility
+  def certify!(certifier, eligible = false)
+    return false unless self.locked?                          # gotta be locked (ie. someone's done work to certify us)
+    return false unless self.certified_at.nil?                # can't already be certified
+    return false unless self.certifier_id == certifier.id  # gotta be the currently active user
 
-    return self.update_attributes!(:verified_at => Time.now)
+    return self.update_attributes!(:certified_at => Time.now, :certification => eligible)
   end
 
-  # basically unlocking is like saying "I'm abandoning my verification of this user",
-  # allowing other admins to verify
-  def unlock!
-    return false unless self.locked?                         # gotta be locked
-    return false unless self.verified_at.nil?                # can't already be verified
-    return false unless self.verifier_id == current_user.id  # gotta be the currently active user
+  # basically unlocking is like saying "I'm abandoning my certification of this user",
+  # allowing other admins to certify
+  def unlock!(certifier)
+    return false unless self.locked?                          # gotta be locked
+    return false unless self.certified_at.nil?                # can't already be certified
+    return false unless self.certifier_id == certifier_user.id  # gotta be the currently active user
 
-    return self.update_attributes!(:locked => false, :verifier_id => nil)
+    return self.update_attributes!(:locked => false, :certifier_id => nil)
   end
 
-  def locked?
+  # if you pass in a certifier, it checks to see if the user is locked by the certifier
+  # otherwise it just checks to see if the user is locked period
+  def locked?(certifier = nil)
+    if certifier
+      return self.certifier_id != certifier.id
+    end
+
     return self.locked.present?
   end
 
-  def verified?
-    return self.verified_at.present?
+  def certified?
+    return self.certified_at.present?
   end
 
   def self.recent(count, conditions = {})
@@ -108,5 +115,10 @@ class User < ActiveRecord::Base
   def set_defaults
     # if a user is confirmed, they can vote. if not, they can't do anything priviledged
     self.roles ||= self.confirmed_at.present? ? [:voter] : []
+  end
+
+  def current_user
+    return nil unless session = UserSession.find
+    return session.user
   end
 end

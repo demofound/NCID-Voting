@@ -13,7 +13,12 @@ ActiveAdmin.register User do
   end
 
   member_action :verify, :method => :get, :as => :block do
-
+    # not a fan of sending full-on active record objects to the view but
+    # it's par for the course here in activeadmin land
+    @user  = User.find(params[:id])
+    @user_meta = @user.user_meta
+    @state = @user_meta.state
+    @steps = @state.verify_wizard
   end
 
   show :as => :block, :title => :email do |user|

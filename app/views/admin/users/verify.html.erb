@@ -1,2 +1,64 @@
+<%= stylesheet_link_tag "verification" %>
+<%= javascript_include_tag "verification" %>
 
+<h2>Voter information provided by <%= @user.email %></h2>
+<table class="index_table">
+  <tr>
+    <th>Full Name</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Street Address</th>
+    <th>State</th>
+    <th>City</th>
+    <th>Postal Code</th>
+    <th>Country Code</th>
+    <th>SSN</th>
+  </tr>
+  <tr>
+    <td><%= @user_meta.fullname %></td>
+    <td><%= @user.username %></td>
+    <td><%= @user.email %></td>
+    <td><%= @user_meta.street_address %></td>
+    <td><%= @user_meta.state.name %></td>
+    <td><%= @user_meta.city %></td>
+    <td><%= @user_meta.postal_code %></td>
+    <td><%= @user_meta.country_code %></td>
+    <td><%= @user_meta.ssn %></td>
+  </tr>
+</table>
+<br/>
+<h2>Verification Wizard for <%= @state.name %></h2>
+<% if @steps.present? %>
+<div id="verification_wizard">
+  <ul id="verification_steps">
+    <% @steps.each_with_index do |step, i| %>
+      <li class="step<%= ' hidden' if i != 0 %>">
+        <h3>Step <%= i + 1 %> Instructions</h3>
+        <pre><%= step.instructions %></pre>
+        <div class="buttons">
+          <% if i != 0 %>
+          <a href="javascript://" class="back">Back</a>&nbsp;
+          <% end %>
 
+          <input type="submit" name="continue" class="continue" value="I've Done This"></input>
+        </div>
+      </li>
+    <% end %>
+    <li class="step hidden verify">
+      <h3>There are no more steps. You should now be ready to decide on the eligibility of the voter to vote.</h3>
+      <form id="verify" action="" method="post">
+        <label for="verified">Given the information provided by the voter I certify that the voter
+        <select name="verified" id="verified">
+          <option value="false">is not</option>
+          <option value="true">is</option>
+        </select>
+        registered and eligible to vote.</label><br/><br/>
+        <a href="javascript://" class="back">Back</a>&nbsp;
+        <input type="submit" class="certify" name="certify" value="Certify" />
+      </form>
+    </li>
+  </ul>
+</div>
+<% else %>
+<p>There is no verification wizard for the state of <%= @state.name %></p>
+<% end %>

@@ -1,0 +1,10 @@
+<%= stylesheet_link_tag "verification" %>
+<%= javascript_include_tag "verification" %>
+
+<h2>Changing roles for <%= @user.email %>.</h2>
+<%= form_for @user, :url => roles_do_admin_user_path(@user), :method => :post do |f| %>
+  <label for="roles">Enter roles to assign to the user, comma delimited.<br/>
+    <em>Available roles: <%= @available_roles.to_sentence %></em></label><br/>
+  <input name="roles" value="<%= @user.roles.join(", ")%>" /><br/><br/>
+  <input name="submit" type="submit" value="Update Roles" />
+<% end %>

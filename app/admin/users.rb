@@ -1,7 +1,14 @@
 ActiveAdmin.register User do
   actions :all, :except => [:destroy,:edit,:new]
+
+  # FIXME: it'd be great to only show these buttons if the current user can actually
+  # perform these actions and if the user in question needs them performed...
   action_item :only => :show do
     link_to "Certify", certify_admin_user_path(user)
+  end
+
+  action_item :only => :show do
+    link_to "Change Roles", roles_admin_user_path(user)
   end
 
   index do
@@ -13,14 +20,38 @@ ActiveAdmin.register User do
     column :certified_at
   end
 
+  member_action :roles, :method => :get, :as => :block do
+    @available_roles = ROLES
+  end
+
+  member_action :roles_do, :method => :post, :as => :block do
+    roles = params[:roles].split(",").map{|r| r.strip}
+
+    # because this assignment works against a mask of valid values it should never fail
+    @user.roles = roles
+    @user.save
+
+    flash[:info] = "We have updated the user's roles."
+    return redirect_to admin_user_path(@certifyee)
+  end
+
+  # this is the method that handles displaying the certification wizard
+  # NOTE: there are a lot of before filters that run before this method, which are found at the bottom of this file
   member_action :certify, :method => :get, :as => :block do
     @certifyee_meta = @certifyee.user_meta
     @state = @certifyee_meta.state
     @steps = @state.certify_wizard
   end
 
+  # this is the method that handles certifiers acting on a certifyee
+  # NOTE: there are a lot of before filters that run before this method, which are found at the bottom of this file
   member_action :certify_do, :method => :post, :as => :block do
-    certification = params[:certification] # should be true or false
+    unless certification = params[:certification]
+      flash[:info] = "You didn't specify a certification decision."
+      return redirect_to certify_admin_user_path(@certifyee)
+    end
+
+    # attempt to certify the user yay or nay
     unless @certifyee.certify!(current_user, certification)
       logger.error "unable to certify the user #{@certifyee.inspect}"
       flash[:error] = "We weren't able to document your certification at this time."
@@ -31,6 +62,13 @@ ActiveAdmin.register User do
     return redirect_to admin_user_path(@certifyee)
   end
 
+  # handles the displaying of users
+  # NOTE: there are several levels of user involvement that we have to take into account:
+  #       1. user is registered but hasn't confirmed their email
+  #       2. user is confirmed but hasn't provided meta data about their eligibility
+  #       3. user has provided meta data for certification but hasn't voted
+  #       4. user has voted but hasn't been certified
+  #       5. voter has been certified
   show :as => :block, :title => :email do |user|
     user_meta = user.user_meta
 
@@ -42,6 +80,9 @@ ActiveAdmin.register User do
           end
           th do
             "Username"
+          end
+          th do
+            "Roles"
           end
           th do
             "Registered At"
@@ -75,6 +116,9 @@ ActiveAdmin.register User do
             simple_format user.username
           end
           td do
+            simple_format user.roles.to_sentence
+          end
+          td do
             simple_format user.confirmed_at ? user.confirmed_at.strftime("%B %d, %Y @ %I:%M%p") : ""
           end
           if user_meta
@@ -103,6 +147,9 @@ ActiveAdmin.register User do
   end
 
   controller do
+    before_filter :get_user,            :only => [:roles, :roles_do]
+    before_filter :can_manage,          :only => [:roles, :roles_do]
+
     before_filter :get_certifyee,       :only => [:certify, :certify_do]
     before_filter :needs_certification, :only => [:certify, :certify_do]
     before_filter :can_certify,         :only => [:certify, :certify_do]
@@ -110,11 +157,29 @@ ActiveAdmin.register User do
 
     protected
 
+    ## user management
+
+    def get_user
+      unless @user = User.find(params[:id])
+        flash[:error] = "Unable to find that user."
+        return redirect_to admin_users_path
+      end
+    end
+
+    def can_manage
+      authorize! :update, @user
+    end
+
+    ## certification
+
     # we try to get the user to be certified
     def get_certifyee
       # not a fan of sending full-on active record objects to the view but
       # it's par for the course here in activeadmin land
-      @certifyee = User.find(params[:id])
+      unless @certifyee = User.find(params[:id])
+        flash[:error] = "Unable to find that user."
+        return redirect_to admin_users_path
+      end
     end
 
     # we verify that the current admin has the ability to certify users

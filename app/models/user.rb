@@ -1,3 +1,10 @@
+# Users in this case can have many roles including admins, certifiers, voters, and unprivileged. See the "ability" model.
+# NOTE: there are several levels of user involvement that we have to take into account:
+#       1. user is registered but hasn't confirmed their email
+#       2. user is confirmed but hasn't provided meta data about their eligibility
+#       3. user has provided meta data for certification but hasn't voted
+#       4. user has voted but hasn't been certified
+#       5. user has voted and has been certified
 class User < ActiveRecord::Base
   has_many   :votes
   has_many   :testimonials
@@ -19,7 +26,6 @@ class User < ActiveRecord::Base
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
-  ROLES = [:admin, :voting_official, :voter]
 
   has_paper_trail :only => [:roles_mask, :username, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
 

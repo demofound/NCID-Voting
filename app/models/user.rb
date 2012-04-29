@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
   def unlock!(certifier)
     return false unless self.locked?                          # gotta be locked
     return false unless self.certified_at.nil?                # can't already be certified
-    return false unless self.certifier_id == certifier_user.id  # gotta be the currently active user
+    return false unless self.certifier_id == certifier.id  # gotta be the currently active user
 
     return self.update_attributes!(:locked => false, :certifier_id => nil)
   end

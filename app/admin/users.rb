@@ -39,10 +39,8 @@ ActiveAdmin.register User do
   # provides handling for submission of changed user roles
   # NOTE: obviously dangerous
   member_action :roles_do, :method => :post, :as => :block do
-    roles = params[:roles].split(",").map{|r| r.strip}
-
     # because this assignment works against a mask of valid values it should never fail
-    @user.roles = roles
+    @user.roles = params[:user][:roles]
     @user.save
 
     flash[:info] = "We have updated the user's roles."

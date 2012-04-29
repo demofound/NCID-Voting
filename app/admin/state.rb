@@ -1,7 +1,14 @@
 ActiveAdmin.register State do
-  actions :all, :except => [:destroy,:edit,:new]
+  actions :all, :except => [:destroy,:new]
   action_item :only => :show do
     link_to "New Certification Wizard Step", new_admin_certify_wizard_step_path
+  end
+
+  form do |f|
+    f.inputs "Content" do
+      f.input :required_fields, :as => :check_boxes, :collection => STATE_REQUIRED_FIELDS
+    end
+    f.buttons
   end
 
   index do
@@ -12,6 +19,24 @@ ActiveAdmin.register State do
 
   show :as => :block, :title => :name do |state|
     div :for => state do
+      table :class =>"index_table" do
+        tr do
+          th do
+            "Code"
+          end
+          th do
+            "Required Field Types"
+          end
+        end
+        tr do
+          td do
+            state.code
+          end
+          td do
+            state.required_fields.to_sentence
+          end
+        end
+      end
       h3 "Certification Wizard Steps"
       unless steps = state.certify_wizard and steps.present?
         div do

@@ -7,29 +7,25 @@ class State < ActiveRecord::Base
   validates_format_of   :code, :with => /^[A-Z]+$/
   validates_length_of   :code, :is => 2
 
-  scope :with_required_fields, lambda { |field| {:conditions => "required_fields_mask & #{2**REQUIRED_FIELDS.index(field.to_s)} > 0"} }
-
-  DOMESTIC_ONLY_FIELDS = [:ssn_last_four]
-  ANYWHERE_FIELDS = [:fullname, :address]
-  REQUIRED_FIELDS = DOMESTIC_ONLY_FIELDS + ANYWHERE_FIELDS
+  scope :with_required_fields, lambda { |field| {:conditions => "required_fields_mask & #{2**STATE_REQUIRED_FIELDS.index(field.to_s)} > 0"} }
 
   def required_fields=(required_fields)
-    return self.required_fields_mask = (required_fields.map(&:to_sym) & REQUIRED_FIELDS).map { |r| 2**REQUIRED_FIELDS.index(r) }.sum
+    return self.required_fields_mask = (required_fields.map(&:to_sym) & STATE_REQUIRED_FIELDS).map { |r| 2**STATE_REQUIRED_FIELDS.index(r) }.sum
   end
 
   def required_fields
-    return REQUIRED_FIELDS.reject { |r| ((required_fields_mask || 0) & 2**REQUIRED_FIELDS.index(r)).zero? }
+    return STATE_REQUIRED_FIELDS.reject { |r| ((required_fields_mask || 0) & 2**STATE_REQUIRED_FIELDS.index(r)).zero? }
   end
 
   def self.all_fields
-    return REQUIRED_FIELDS
+    return STATE_REQUIRED_FIELDS
   end
 
   def self.domestic_fields
-    return DOMESTIC_ONLY_FIELDS
+    return STATE_DOMESTIC_ONLY_FIELDS
   end
 
   def self.anywhere_fields
-    return ANYWHERE_FIELDS
+    return STATE_ANYWHERE_FIELDS
   end
 end

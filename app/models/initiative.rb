@@ -8,6 +8,7 @@ class Initiative < ActiveRecord::Base
   validates_presence_of   :name
   validates_presence_of   :code
   validates_presence_of   :user_id
+  validates_presence_of   :votes_needed
   validates_uniqueness_of :code, :message => "is already in use"
 
   has_paper_trail :skip => PAPER_TRAIL_SKIP_ATTRIBUTES
@@ -16,8 +17,8 @@ class Initiative < ActiveRecord::Base
 
   private
 
-  def self.recent(count)
-    return Initiative.limit(count).order("created_at DESC").all
+  def self.active(count)
+    return Initiative.limit(count).order("created_at DESC").where("end_at < ? OR end_at is null", Time.now).all
   end
 
   def set_defaults

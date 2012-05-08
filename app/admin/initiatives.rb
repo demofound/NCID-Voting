@@ -8,6 +8,9 @@ ActiveAdmin.register Initiative do
     column :start_at
     column :end_at
     column :code
+    column :vote_count do |initiative|
+      "#{initiative.votes.count}/#{initiative.votes_needed}"
+    end
   end
 
   show :as => :block, :title => :name do |initiative|
@@ -28,6 +31,9 @@ ActiveAdmin.register Initiative do
           end
           th do
             "End At"
+          end
+          th do
+            "Vote Count"
           end
           th do
             "Code"
@@ -51,6 +57,9 @@ ActiveAdmin.register Initiative do
           end
           td do
             simple_format initiative.end_at ? iniatiative.end_at.strftime("%B %d, %Y @ %I:%M%p") : ""
+          end
+          td do
+            simple_format "#{initiative.votes.count} / #{initiative.votes_needed}"
           end
           td do
             simple_format initiative.code

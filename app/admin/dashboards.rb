@@ -1,6 +1,6 @@
 ActiveAdmin::Dashboards.build do
   section "Users Requiring Certification" do
-    table_for User.recent(20, {:certified_at => nil}) do
+    table_for User.recent(20, {:certified_at => nil, :certifier_id => nil}) do
       column "" do |user|
         link_to "certify", certify_admin_user_path(user)
       end
@@ -16,13 +16,16 @@ ActiveAdmin::Dashboards.build do
     end
   end
 
-  section "Recent Initiatives" do
-    table_for Initiative.recent(5) do
+  section "Active Initiatives" do
+    table_for Initiative.active(5) do
       column :name do |initiative|
         link_to initiative.name, [:admin, initiative]
       end
       column :start_at
       column :end_at
+      column :vote_count do |initiative|
+        "#{initiative.votes.count} / #{initiative.votes_needed}"
+      end
     end
   end
 end

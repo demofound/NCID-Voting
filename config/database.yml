@@ -7,7 +7,6 @@ development:
   pool: 5
   username: nci
   password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
-  socket: /opt/local/var/run/mysql5/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

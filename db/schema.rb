@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120428080819) do
+ActiveRecord::Schema.define(:version => 20120508041228) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -27,6 +27,14 @@ ActiveRecord::Schema.define(:version => 20120428080819) do
   add_index "active_admin_comments", ["author_type", "author_id"], :name => "index_active_admin_comments_on_author_type_and_author_id"
   add_index "active_admin_comments", ["namespace"], :name => "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
+
+  create_table "admin_comments", :force => true do |t|
+    t.integer  "user_id"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "commenter_id"
+  end
 
   create_table "certify_wizard_steps", :force => true do |t|
     t.text     "instructions"
@@ -45,6 +53,7 @@ ActiveRecord::Schema.define(:version => 20120428080819) do
     t.datetime "updated_at"
     t.string   "code"
     t.integer  "user_id"
+    t.integer  "votes_needed"
   end
 
   create_table "states", :force => true do |t|

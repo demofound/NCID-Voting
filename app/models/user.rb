@@ -10,8 +10,10 @@ class User < ActiveRecord::Base
   has_many   :testimonials
   has_many   :initiatives
   has_one    :user_meta
-  has_many   :certified_users, :class_name => "User", :foreign_key => "certifier_id"
-  belongs_to :certifier,       :class_name => "User", :foreign_key => "certifier_id"
+  has_many   :admin_comments,  :class_name => "AdminComment", :foreign_key => "user_id",     :order => "created_at DESC"
+  has_many   :comments_left,   :class_name => "AdminComment", :foreign_key => "commenter_id"
+  has_many   :certified_users, :class_name => "User",         :foreign_key => "certifier_id"
+  belongs_to :certifier,       :class_name => "User",         :foreign_key => "certifier_id"
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader

@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at, :certification
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at, :certification, :needs_review
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }

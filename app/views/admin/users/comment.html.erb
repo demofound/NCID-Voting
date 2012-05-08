@@ -1,3 +1,4 @@
+<h2>Comment on <%= @user.email %></h2>
 <%= semantic_form_for @user, :url => comment_do_admin_user_path(@user) do |f| %>
   <%= f.inputs :for => :admin_comment do |admin_comment_form| %>
     <%= admin_comment_form.input :body, :as => :text, :label => "New Comment" %>

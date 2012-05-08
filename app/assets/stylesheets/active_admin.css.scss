@@ -28,3 +28,8 @@ html[xmlns] .clearfix {
 
 li.input{ list-style-type: none; }
 .input.check_boxes input{ margin-right: 5px; }
+
+#title_bar .action_item a.important{
+  border: 1px solid red;
+  box-shadow: 0 0 5px red;
+}

@@ -1,13 +1,13 @@
 ActiveAdmin::Dashboards.build do
-  section "Users Requiring Certification" do
+  section "Users Requiring Certification", :priority => 1 do
     table_for User.recent(20, {:certified_at => nil, :certifier_id => nil}) do
       column "" do |user|
         link_to "certify", certify_admin_user_path(user)
       end
-      column :email
-      column :username do |user|
-        link_to user.username, [:admin, user]
+      column :email do |user|
+        link_to user.email, [:admin, user]
       end
+      column :username
       # confirmed_at -> "registered at" label is to try to avoid confusion with certified_at
       column "Registered At", :confirmed_at
       column :state do |user|
@@ -16,7 +16,7 @@ ActiveAdmin::Dashboards.build do
     end
   end
 
-  section "Active Initiatives" do
+  section "Active Initiatives", :priority => 2 do
     table_for Initiative.active(5) do
       column :name do |initiative|
         link_to initiative.name, [:admin, initiative]
@@ -26,6 +26,15 @@ ActiveAdmin::Dashboards.build do
       column :vote_count do |initiative|
         "#{initiative.votes.count} / #{initiative.votes_needed}"
       end
+    end
+  end
+
+  section "Users Flagged for Administrative Review", :priority => 3 do
+    table_for User.where({:needs_review => true}).limit(20).order("updated_at DESC").all do
+      column :email do |user|
+        link_to user.email, [:admin, user]
+      end
+      column :username
     end
   end
 end

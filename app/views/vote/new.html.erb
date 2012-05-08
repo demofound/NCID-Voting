@@ -1,15 +1,19 @@
+<div class="overlay_bg"></div>
+
 <h2><%= @initiative_contents[:name] %></h2>
 
-<div class="description">
+<p class="description">
   <%= @initiative_contents[:description] %>
-</div>
+</p>
 
+<div id="vote_container">
 <%= semantic_form_for(@vote, :url => create_vote_path(:initiative_code => @initiative_contents[:code]), :html_options => {:id => "vote"}) do |f| %>
   <%= f.inputs do %>
-    <%= f.input :decision, :label => "I am voting for #{@initiative_contents[:name]}" %>
+    <%= f.input :decision, :label => "I have read and understood the  #{@initiative_contents[:name]} and vote in favor." %>
   <% end %>
   <p class="alert alert-info">Please note that once you cast your vote, your vote is final.  You will not be able to change your vote after-the-fact.</p>
   <%= f.buttons do %>
     <%= f.commit_button "Cast Vote" %>
   <% end %>
 <% end %>
+</div>

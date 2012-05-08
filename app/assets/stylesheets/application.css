@@ -66,3 +66,64 @@ img.userpic{
 footer{
     text-align: right;
 }
+
+/* voting */
+
+body.vote > .container{
+    text-align: center;
+    padding-top: 0px;
+}
+
+body.vote .overlay_bg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: black;
+    opacity: .7;
+    filter: alpha(opacity=70);
+    height: 99999px;
+    width: 99999px;
+}
+
+body.vote .content{
+    display: inline-block;
+    width: 500px;
+    text-align: left;
+    padding: 10px 20px 0 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px black;
+}
+
+body.vote #vote_decision{
+    float: left;
+}
+
+body.vote #new_vote fieldset{
+    background: none;
+    box-shadow: none;
+}
+
+body.vote #vote_decision_input label{
+    padding-left: 0;
+    font-size: 1.2em;
+    padding-left: 1.5em;
+    position: relative;
+}
+
+body.vote #vote_decision_input label input{
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+body.vote #new_vote .buttons{
+    text-align: right;
+    padding: 0;
+    margin: 0;
+}
+
+body.vote #new_vote .buttons li{
+    float: none;
+}

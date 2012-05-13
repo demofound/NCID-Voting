@@ -1,17 +1,15 @@
 ActiveAdmin::Dashboards.build do
-  section "Users Requiring Certification", :priority => 1 do
-    table_for User.recent(20, {:certified_at => nil, :certifier_id => nil}) do
-      column "" do |user|
-        link_to "certify", certify_admin_user_path(user)
+  section "Registrations Requiring Certification", :priority => 1 do
+    table_for Registration.recent(20, {:certified_at => nil, :certifier_id => nil}) do
+      column "" do |registration|
+        link_to "certify", certify_admin_registration_path(registration)
       end
-      column :email do |user|
-        link_to user.email, [:admin, user]
+      column :email do |registration|
+        link_to (user = registration.user).email, admin_user_path(user)
       end
-      column :username
-      # confirmed_at -> "registered at" label is to try to avoid confusion with certified_at
-      column "Registered At", :confirmed_at
-      column :state do |user|
-        (meta = user.user_meta) ? meta.state.name : ""
+      column "Created At", :created_at
+      column :state do |registration|
+        registration.state.name
       end
     end
   end

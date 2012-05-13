@@ -1,5 +1,5 @@
 class State < ActiveRecord::Base
-  has_many :user_metas
+  has_many :registrations
   has_many :certify_wizard, :class_name => "CertifyWizardStep", :order => "order_index ASC"
 
   validates_presence_of :name

@@ -1,19 +1,16 @@
 # Users in this case can have many roles including admins, certifiers, voters, and unprivileged. See the "ability" model.
 # NOTE: there are several levels of user involvement that we have to take into account:
 #       1. user is registered but hasn't confirmed their email
-#       2. user is confirmed but hasn't provided meta data about their eligibility
-#       3. user has provided meta data for certification but hasn't voted
+#       2. user is confirmed but hasn't provided registration data about their eligibility
+#       3. user has provided registration data for certification but hasn't voted
 #       4. user has voted but hasn't been certified
 #       5. user has voted and has been certified
 class User < ActiveRecord::Base
-  has_many   :votes
   has_many   :testimonials
   has_many   :initiatives
-  has_one    :user_meta
-  has_many   :admin_comments,  :class_name => "AdminComment", :foreign_key => "user_id",     :order => "created_at DESC"
+  has_many   :registrations
   has_many   :comments_left,   :class_name => "AdminComment", :foreign_key => "commenter_id"
   has_many   :certified_users, :class_name => "User",         :foreign_key => "certifier_id"
-  belongs_to :certifier,       :class_name => "User",         :foreign_key => "certifier_id"
 
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader
@@ -33,67 +30,9 @@ class User < ActiveRecord::Base
 
   before_save :set_defaults
 
-  # basically begins the certification process - claims the user by the admin and
-  # prevents access by other admins
-  def lock!(certifier)
-    return false if self.locked?                              # already locked?
-    return false if self.certifier.present?                   # already claimed?
-    return false unless self.certified_at.nil?                # already certified?
-
-    return self.update_attributes!(:certifier_id => certifier.id, :locked => true)
-  end
-
-  # certification can only occur given an admin has locked/claimed the user
-  # - should pass in true if the certification is affirmative for eligibility
-  def certify!(certifier, eligible = false)
-    return false unless self.locked?                          # gotta be locked (ie. someone's done work to certify us)
-    return false unless self.certified_at.nil?                # can't already be certified
-    return false unless self.certifier_id == certifier.id  # gotta be the currently active user
-
-    return self.update_attributes!(:certified_at => Time.now, :certification => eligible, :locked => false)
-  end
-
-  # basically unlocking is like saying "I'm abandoning my certification of this user",
-  # allowing other admins to certify
-  def unlock!(certifier)
-    return false unless self.locked?                          # gotta be locked
-    return false unless self.certified_at.nil?                # can't already be certified
-    return false unless self.certifier_id == certifier.id  # gotta be the currently active user
-
-    return self.update_attributes!(:locked => false, :certifier_id => nil)
-  end
-
-  # if you pass in a certifier, it checks to see if the user is locked by the certifier
-  # otherwise it just checks to see if the user is locked period
-  def locked?(certifier = nil)
-    if certifier
-      return self.certifier_id.present? && self.certifier_id != certifier.id
-    end
-
-    return self.locked.present?
-  end
-
-  def certified?
-    return self.certified_at.present?
-  end
-
-  # no sense in trying to certify people who haven't provided their meta
+  # no sense in trying to certify people who haven't provided a registration
   def needs_certification?
-    return !self.certified? && self.user_meta.present?
-  end
-
-  def self.recent(count, conditions = {})
-    return User.limit(count).order("confirmed_at DESC").all(:conditions => conditions)
-  end
-
-  def read_vote_on_initiative(initiative_codes)
-    initiative_ids = Initiative.where(:code => initiative_codes).select(:id).map(&:id)
-    return self.votes.where(:initiative_id => initiative_ids).first
-  end
-
-  def cast_vote_on_initiative(initiative_code, decision)
-    initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
-    return self.votes.create(:initiative_id => initiative_id, :decision => decision)
+    return !self.certified? && self.registrations.present?
   end
 
   # sets the roleset, overwriting whatever is currently assigned
@@ -119,8 +58,8 @@ class User < ActiveRecord::Base
     return self.roles.include? role.to_sym
   end
 
-  def needs_meta?
-    return self.user_meta.nil?
+  def needs_registration?
+    return self.registrations.empty?
   end
 
   private

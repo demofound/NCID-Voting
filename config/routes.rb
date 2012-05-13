@@ -12,11 +12,11 @@ NciVote::Application.routes.draw do
 
   devise_for :users, active_admin_devise_config
 
-  controller :user, :path => "/" do
-    get  "user/choose_locale/registration" => :choose_location, :as => :choose_location_user
-    get  "user/domestic/registration"      => :meta_domestic,   :as => :meta_domestic_user
-    get  "user/international/registration" => :meta_foreign,    :as => :meta_foreign_user
-    post "user/registration"               => :meta_do,         :as => :meta_do_user
+  controller :register, :path => "/" do
+    get  "register_to_vote/choose_locale" => :choose_location, :as => :choose_location_user
+    get  "register_to_vote/domestic"      => :meta_domestic,   :as => :meta_domestic_user
+    get  "register_to_vote/international" => :meta_foreign,    :as => :meta_foreign_user
+    post "register_to_vote"               => :meta_do,         :as => :meta_do_user
   end
 
   controller :vote, :path => "/" do

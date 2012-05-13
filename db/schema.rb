@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120508051113) do
+ActiveRecord::Schema.define(:version => 20120513063209) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(:version => 20120508051113) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
 
   create_table "admin_comments", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "registration_id"
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -56,6 +56,21 @@ ActiveRecord::Schema.define(:version => 20120508051113) do
     t.integer  "votes_needed"
   end
 
+  create_table "registration", :force => true do |t|
+    t.string   "ssn"
+    t.string   "postal_code"
+    t.string   "country_code"
+    t.integer  "state_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "street_address"
+    t.string   "city"
+    t.string   "fullname"
+    t.integer  "certifier_id"
+    t.datetime "certified_at"
+  end
+
   create_table "states", :force => true do |t|
     t.string   "code"
     t.string   "name"
@@ -70,19 +85,6 @@ ActiveRecord::Schema.define(:version => 20120508051113) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-  end
-
-  create_table "user_meta", :force => true do |t|
-    t.string   "ssn"
-    t.string   "postal_code"
-    t.string   "country_code"
-    t.integer  "state_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "street_address"
-    t.string   "city"
-    t.string   "fullname"
   end
 
   create_table "users", :force => true do |t|
@@ -104,9 +106,7 @@ ActiveRecord::Schema.define(:version => 20120508051113) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.integer  "roles_mask"
-    t.integer  "certifier_id"
     t.boolean  "locked"
-    t.datetime "certified_at"
     t.boolean  "certification"
     t.boolean  "needs_review"
   end
@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20120508051113) do
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
+    t.integer  "registration_id"
     t.integer  "initiative_id"
     t.string   "ref_code"
   end

@@ -66,8 +66,16 @@ class RegistrationController < ApplicationController
     # NOTE: no state currently implies foreign
   end
 
-  # just an attempt to DRY up the international and domestic actions
   def new_registration
+    # do they already have a registration waiting certification? to avoid overloading
+    # the certifiers we only allow one pending registration at a time
+    unless registration_pending = current_user.current_registration and registration_pending.certified?
+      logger.warn "user #{current_user} tried to create a new registration when they already one pending #{registration_pending.inspect}"
+      flash[:warning] = "You already have a registration pending certification. Please wait for this registration to be certified."
+      return redirect_to session[:return_to] # send them back
+    end
+
+    # okay, they don't have a pending certification
     @registration = Registration.new(:state_id => @state[:id])
   end
 end

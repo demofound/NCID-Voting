@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :redirect_if_user_registration_needed
   before_filter :pass_forward_url
+  before_filter :return_to_storage
 
   layout :layout_by_resource
 
@@ -47,5 +48,9 @@ class ApplicationController < ActionController::Base
     unless current_user.present?
       return redirect_to new_user_session_path
     end
+  end
+
+  def return_to_storage
+    session[:return_to] ||= request.referer
   end
 end

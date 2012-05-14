@@ -14,7 +14,7 @@ class VoteController < ApplicationController
 
   # handles the submission of a cast vote by a voter
   def create
-    unless @vote = current_user.current_registration.cast_vote_on_initiative(@initiative.code, params[:decision])
+    unless @vote = current_user.current_registration.cast_vote_on_initiative(@initiative.code)
       logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
       flash[:warn] = "There was an issue with your vote."
       return render :new

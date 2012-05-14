@@ -6,8 +6,8 @@ class Vote < ActiveRecord::Base
 
   before_save :set_defaults
 
-  validates_presence_of   :initiative,                        :message => "wasn't provided"
-  validates_uniqueness_of :user_id, :scope => :initiative_id, :message => "may only vote once"
+  validates_presence_of   :initiative,      :message => "wasn't provided"
+  validates_uniqueness_of :registration_id, :scope   => :initiative_id, :message => "may only vote once"
 
   private
 

@@ -1,6 +1,6 @@
 ActiveAdmin::Dashboards.build do
   section "Registrations Requiring Certification", :priority => 1 do
-    table_for Registration.recent(20, {:certified_at => nil, :certifier_id => nil}) do
+    table_for Registration.recent(20, {:certified_at => nil, :certifier_id => [nil, current_user.id]}) do
       column "" do |registration|
         link_to "certify", certify_admin_registration_path(registration)
       end

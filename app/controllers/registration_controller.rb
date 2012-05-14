@@ -69,7 +69,7 @@ class RegistrationController < ApplicationController
   def new_registration
     # do they already have a registration waiting certification? to avoid overloading
     # the certifiers we only allow one pending registration at a time
-    unless registration_pending = current_user.current_registration and registration_pending.certified?
+    if registration_pending = current_user.current_registration and !registration_pending.certified?
       logger.warn "user #{current_user} tried to create a new registration when they already one pending #{registration_pending.inspect}"
       flash[:warning] = "You already have a registration pending certification. Please wait for this registration to be certified."
       return redirect_to session[:return_to] # send them back

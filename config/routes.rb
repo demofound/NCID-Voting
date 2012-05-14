@@ -13,6 +13,11 @@ NciVote::Application.routes.draw do
   # this macro handles account registration...
   devise_for :users, active_admin_devise_config
 
+  controller :user, :path => "/user" do
+    get "account" => :update,    :as => :update_user
+    put "account" => :update_do, :as => :update_user_do
+  end
+
   # this 'registration' means *voter registration* not account registration. sorry for any confusion
   # but I felt any other word would just make things more confusing and didn't wanna override Devises' concepts
   controller :registration, :path => "/" do

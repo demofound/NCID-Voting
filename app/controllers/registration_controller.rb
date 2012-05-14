@@ -1,7 +1,5 @@
 class RegistrationController < ApplicationController
-  layout "active_admin_esque"
-
-  before_filter :login_minus_registration_required, :only => [:register_domestic, :register_do, :register_foreign]
+  before_filter :session_required
   before_filter :get_state,                         :only => [:register_domestic, :register_do, :register_foreign]
   before_filter :new_registration,                  :only => [:register_domestic, :register_foreign]
 
@@ -71,12 +69,5 @@ class RegistrationController < ApplicationController
   # just an attempt to DRY up the international and domestic actions
   def new_registration
     @registration = Registration.new(:state_id => @state[:id])
-  end
-
-  # in order to collect user's registration information they have to have an account, logged in, but missing a registration
-  def login_minus_registration_required
-    unless current_user.present? && current_user.needs_registration?
-      return redirect_to new_user_session_path
-    end
   end
 end

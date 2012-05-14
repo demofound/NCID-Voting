@@ -42,4 +42,10 @@ class ApplicationController < ActionController::Base
     # if we've been handed a forward_url, make it available to the views or whomever to handle
     @forward_url = params[:forward_url]
   end
+
+  def session_required
+    unless current_user.present?
+      return redirect_to new_user_session_path
+    end
+  end
 end

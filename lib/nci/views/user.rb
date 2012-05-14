@@ -6,27 +6,23 @@ module NCI
       #  eg: NCI::Views::User.to_hash(some_user, :testimonials) and the user's testimonials
       #      will me merged passed back in the returned hash
       def self.to_hash(user, *args)
-        user_meta = user.user_meta
+        registration = user.current_registration
 
         # this is the base hash that we will always return
         hash = {
           :username => user.username,
-          :fullname => user_meta.fullname,
+          :fullname => registration.fullname,
           :avatar   => user.avatar.url
         }
 
         # optional hash additions
-
-        if args.include? :vote
-          hash.merge! :vote => user.vote
-        end
 
         if args.include? :testimonials
           hash.merge! :testimonials => user.testimonials.map{ |t| NCI::Views::Testimonial.to_hash(t, user) }
         end
 
         if args.include? :state
-          hash.merge :state => meta.state
+          hash.merge :state => registration.state
         end
 
         return hash

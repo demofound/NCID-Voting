@@ -10,8 +10,11 @@ NciVote::Application.routes.draw do
   root :to => "home#index"
   get  "home/index"
 
+  # this macro handles account registration...
   devise_for :users, active_admin_devise_config
 
+  # this 'registration' means *voter registration* not account registration. sorry for any confusion
+  # but I felt any other word would just make things more confusing and didn't wanna override Devises' concepts
   controller :registration, :path => "/" do
     get  "register_to_vote/choose_locale" => :choose_location,     :as => :choose_location
     get  "register_to_vote/domestic"      => :register_domestic,   :as => :register_domestic

@@ -59,7 +59,7 @@ ActiveAdmin.register Initiative do
             simple_format initiative.end_at ? iniatiative.end_at.strftime("%B %d, %Y @ %I:%M%p") : ""
           end
           td do
-            simple_format "#{initiative.votes.count} / #{initiative.votes_needed}"
+            simple_format "#{initiative.vote_count} / #{initiative.votes_needed}"
           end
           td do
             simple_format initiative.code

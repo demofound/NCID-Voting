@@ -15,6 +15,12 @@ class Initiative < ActiveRecord::Base
 
   attr_protected :creator
 
+  def vote_count
+    # since users can have many votes for an initiative (if they have
+    # multiple registrations), we need to ensure our tally only counts votes per user
+    return Vote.where(:initiative_id => self.id).select(:user_id).uniq.count
+  end
+
   private
 
   def self.active(count)

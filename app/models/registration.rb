@@ -89,7 +89,7 @@ class Registration < ActiveRecord::Base
 
   def cast_vote_on_initiative(initiative_code)
     initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
-    return self.votes.create(:initiative_id => initiative_id, :decision => true)
+    return self.votes.create(:initiative_id => initiative_id, :decision => true, :user_id => self.user.id)
   end
 
   def derive_country

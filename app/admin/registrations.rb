@@ -174,6 +174,36 @@ ActiveAdmin.register Registration do
         end
       end
 
+      div :for => registration do
+        h3 "Votes"
+        table :class => "index_table" do
+          tr do
+            th do
+              "ID"
+            end
+            th do
+              "Initiative"
+            end
+            th do
+              "Created At"
+            end
+          end
+          registration.votes.each do |vote|
+            tr do
+              td do
+                vote.id
+              end
+              td do
+                link_to vote.initiative.name, admin_initiative_path(vote.initiative)
+              end
+              td do
+                vote.created_at.strftime("%B %d, %Y @ %I:%M%p")
+              end
+            end
+          end
+        end
+      end
+
       revision_table(registration)
     end
   end

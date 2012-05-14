@@ -9,6 +9,12 @@ class User < ActiveRecord::Base
   has_many   :testimonials
   has_many   :initiatives
   has_many   :registrations
+
+  # it's a bad idea to access votes directly from the user because, really, registrations own them.
+  # the user relationship is mostly used for tallying unique votes by user for initiatives since
+  # users can have many registrations and it would be difficult to tally without the user_id
+  has_many   :votes
+
   has_many   :comments_left,   :class_name => "AdminComment", :foreign_key => "commenter_id"
   has_many   :certified_users, :class_name => "User",         :foreign_key => "certifier_id"
 

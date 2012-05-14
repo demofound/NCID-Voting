@@ -150,6 +150,8 @@ ActiveAdmin.register User do
       end
     end
 
+    active_admin_comments
+
     revision_table(user)
   end
 

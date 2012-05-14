@@ -11,10 +11,6 @@ ActiveAdmin.register Registration do
     link_to "Certify", certify_admin_registration_path(registration)
   end
 
-  #  action_item :only => :show do
-  #    link_to "Leave Comment", comment_admin_user_path(registration)
-  #  end
-
   action_item :only => :show do
     link_to registration.needs_review ? "Unflag" : "Flag for Review", registration.needs_review ? unflag_for_review_admin_registration_path(registration) : flag_for_review_admin_registration_path(registration), :class => registration.needs_review ? "important" : ""
   end
@@ -203,6 +199,8 @@ ActiveAdmin.register Registration do
           end
         end
       end
+
+      active_admin_comments
 
       revision_table(registration)
     end

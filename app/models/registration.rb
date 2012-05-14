@@ -1,6 +1,5 @@
 class Registration < ActiveRecord::Base
   has_many   :votes
-  has_many   :admin_comments,  :class_name => "AdminComment", :foreign_key => "registration_id",     :order => "created_at DESC"
 
   belongs_to :certifier,       :class_name => "User",         :foreign_key => "certifier_id"
   belongs_to :user

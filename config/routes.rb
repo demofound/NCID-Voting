@@ -12,19 +12,21 @@ NciVote::Application.routes.draw do
 
   devise_for :users, active_admin_devise_config
 
-  controller :register, :path => "/" do
-    get  "register_to_vote/choose_locale" => :choose_location, :as => :choose_location_user
-    get  "register_to_vote/domestic"      => :meta_domestic,   :as => :meta_domestic_user
-    get  "register_to_vote/international" => :meta_foreign,    :as => :meta_foreign_user
-    post "register_to_vote"               => :meta_do,         :as => :meta_do_user
+  controller :registration, :path => "/" do
+    get  "register_to_vote/choose_locale" => :choose_location,     :as => :choose_location
+    get  "register_to_vote/domestic"      => :register_domestic,   :as => :register_domestic
+    get  "register_to_vote/international" => :register_foreign,    :as => :register_foreign
+    post "register_to_vote"               => :register_do,         :as => :register_do
   end
 
   controller :vote, :path => "/" do
     get    ":initiative_code/vote"  => :new,    :as => :new_vote
     post   ":initiative_code/vote"  => :create, :as => :create_vote
-    get    "vote/:ref_code"         => :show,   :as => :show_vote
+# modify vote disabled - probably don't want it
+#    get    "vote/:ref_code"         => :show,   :as => :show_vote
     put    "vote/:ref_code"         => :update, :as => :update_vote
-    delete "vote/:ref_code"         => :delete, :as => :delete_vote
+# delete vote disabled - probably don't want it
+#    delete "vote/:ref_code"         => :delete, :as => :delete_vote
   end
 
   controller :info, :path => "/info" do

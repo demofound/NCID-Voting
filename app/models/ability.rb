@@ -18,7 +18,7 @@ class Ability
       end
 
       can :read, Vote do |vote|
-        user.id == vote.user_id
+        user.id == vote.registration.user_id
       end
     end
 

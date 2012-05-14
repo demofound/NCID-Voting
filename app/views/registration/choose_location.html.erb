@@ -5,12 +5,12 @@
   <div class="span6">
     <h3>United States</h3>
     <% @states.each do |s| %>
-      <%= link_to s[:name], meta_domestic_user_path(:state_code => s[:code], :forward_url => @forward_url) %><br/>
+      <%= link_to s[:name], register_domestic_path(:state_code => s[:code], :forward_url => @forward_url) %><br/>
     <% end %>
   </div>
   <div class="span6">
     <h3>Non-US</h3>
-    <%= link_to "Continue", meta_foreign_user_path %>
+    <%= link_to "Continue", register_foreign_path %>
   </div>
 </div>
 

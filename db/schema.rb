@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120513063209) do
+ActiveRecord::Schema.define(:version => 20120513211925) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(:version => 20120513063209) do
     t.integer  "votes_needed"
   end
 
-  create_table "registration", :force => true do |t|
+  create_table "registrations", :force => true do |t|
     t.string   "ssn"
     t.string   "postal_code"
     t.string   "country_code"
@@ -69,6 +69,9 @@ ActiveRecord::Schema.define(:version => 20120513063209) do
     t.string   "fullname"
     t.integer  "certifier_id"
     t.datetime "certified_at"
+    t.boolean  "needs_review"
+    t.boolean  "locked"
+    t.boolean  "certification"
   end
 
   create_table "states", :force => true do |t|
@@ -106,9 +109,6 @@ ActiveRecord::Schema.define(:version => 20120513063209) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.integer  "roles_mask"
-    t.boolean  "locked"
-    t.boolean  "certification"
-    t.boolean  "needs_review"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

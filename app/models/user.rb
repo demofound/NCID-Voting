@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   validates_length_of     :username, :message => "must be at least three characters", :minimum => 3
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :username, :certifier_id, :locked, :certified_at, :certification, :needs_review
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :username
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
@@ -30,9 +30,13 @@ class User < ActiveRecord::Base
 
   before_save :set_defaults
 
-  # no sense in trying to certify people who haven't provided a registration
+  # no sense in trying to certify people who haven't passed voter registration certification
   def needs_certification?
-    return !self.certified? && self.registrations.present?
+    return (current_registration = self.current_registration) && !self.current_registration.certified?
+  end
+
+  def can_vote?
+    return (current_registration = self.current_registration) && current_registration.votable?
   end
 
   # sets the roleset, overwriting whatever is currently assigned
@@ -56,6 +60,10 @@ class User < ActiveRecord::Base
 
   def role?(role)
     return self.roles.include? role.to_sym
+  end
+
+  def current_registration
+    return self.registrations.order("created_at DESC").limit(1).last()
   end
 
   def needs_registration?

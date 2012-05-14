@@ -1,4 +1,4 @@
-class RegisterController < ApplicationController
+class RegistrationController < ApplicationController
   layout "active_admin_esque"
 
   before_filter :login_minus_registration_required, :only => [:register_domestic, :register_do, :register_foreign]
@@ -51,7 +51,7 @@ class RegisterController < ApplicationController
 
   def get_state
     # this param will either come from the form post or from the get params
-    state_code  = params[:user].present? ? params[:user][:state_code] : params[:state_code]
+    state_code  = params[:registration].present? ? params[:registration][:state_code] : params[:state_code]
 
     @state = {
       :required_fields => State.anywhere_fields # default to the fields that apply anywhere
@@ -70,7 +70,7 @@ class RegisterController < ApplicationController
 
   # just an attempt to DRY up the international and domestic actions
   def new_registration
-    @registration = Registration.new
+    @registration = Registration.new(:state_id => @state[:id])
   end
 
   # in order to collect user's registration information they have to have an account, logged in, but missing a registration
@@ -79,5 +79,4 @@ class RegisterController < ApplicationController
       return redirect_to new_user_session_path
     end
   end
-
 end

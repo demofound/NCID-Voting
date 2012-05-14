@@ -9,7 +9,7 @@
       <div class="content">
         <% if flash.keys.any? %>
           <% flash.each do |type, message| %>
-            <%= content_tag :div, message, :class => "flash flash_#{type}" %>
+            <%= content_tag :div, message, :class => "flash flash_#{type} alert #{type}" %>
           <% end %>
         <% end %>
 

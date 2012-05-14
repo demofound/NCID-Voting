@@ -35,6 +35,7 @@ class ApplicationController < ActionController::Base
 
     if current_user && current_user.needs_registration?
       # forward_url allows us to hand the original URL that brought us here down the chain
+      flash[:info] = "You've logged in!  Next we'll walk you through registering to vote."
       return redirect_to choose_location_path(:forward_url => request.path)
     end
   end

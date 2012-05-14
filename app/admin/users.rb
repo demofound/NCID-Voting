@@ -78,6 +78,76 @@ ActiveAdmin.register User do
           end
         end
       end
+
+      h3 "Registrations"
+      table :class => "index_table" do
+        tr do
+          th do
+            "ID"
+          end
+          th do
+            "Full Name"
+          end
+          th do
+            "Street Address"
+          end
+          th do
+            "SSN"
+          end
+          th do
+            "Country Code"
+          end
+          th do
+            "State"
+          end
+          th do
+            "Postal Code"
+          end
+          th do
+            "Certified At"
+          end
+          th do
+            "Certification"
+          end
+          th do
+            "Certifier"
+          end
+        end
+        user.registrations.each do |registration|
+          tr do
+            td do
+              link_to registration.id, admin_registration_path(registration)
+            end
+            td do
+              registration.fullname
+            end
+            td do
+              registration.street_address
+            end
+            td do
+              registration.ssn
+            end
+            td do
+              registration.country_code
+            end
+            td do
+              (state = registration.state) ? state.name : ""
+            end
+            td do
+              registration.postal_code
+            end
+            td do
+              simple_format registration.certified_at ? registration.certified_at.strftime("%B %d, %Y @ %I:%M%p") : ""
+            end
+            td do
+              simple_format registration.certification.to_s
+            end
+            td do
+              simple_format registration.certifier ? registration.certifier.username : ""
+            end
+          end
+        end
+      end
     end
 
     revision_table(user)

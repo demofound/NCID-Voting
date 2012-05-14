@@ -7,8 +7,8 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="/">NCID Voting</a>
-          <% if current_user %>
           <div class="pull-right btn-group">
+          <% if current_user %>
             <a class="btn dropdown-toggle" data-toggle="dropdown">
               <i class="icon-user"></i>
               <%= current_user.username %>
@@ -19,8 +19,10 @@
               <li class="divider"></li>
               <li><%= link_to "Logout", destroy_user_session_path %></li>
             </ul>
-          </div>
+          <% else %>
+            <%= link_to "Login / Create Account", new_user_session_path, :class => "btn" %></a>
           <% end %>
+          </div>
           <div class="container nav-collapse">
             <ul class="nav">
               <li><%= link_to "FAQ",       faq_path %></li>

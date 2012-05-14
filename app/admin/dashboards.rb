@@ -36,7 +36,7 @@ ActiveAdmin::Dashboards.build do
         link_to registration.id, [:admin, registration]
       end
       column :email do |registration|
-        link_to registration.user.email, [:admin, user]
+        link_to registration.user.email, [:admin, registration.user]
       end
     end
   end

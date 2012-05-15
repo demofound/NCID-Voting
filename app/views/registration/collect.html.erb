@@ -30,9 +30,14 @@
       <% end %>
     <% end %>
 
+    <% if @state[:required_fields].include? :country_code %>
+      <%= f.inputs :class => "country" do %>
+        <%= f.input :country_code, :as => :select, :collection => @countries, :label => "Country" %>
+      <% end %>
+    <% end %>
+
     <%= f.buttons do %>
       <%= f.commit_button "Register to Vote" %>
     <% end %>
   <% end %>
 </div>
-

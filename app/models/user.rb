@@ -8,7 +8,7 @@
 class User < ActiveRecord::Base
   has_many   :testimonials
   has_many   :initiatives
-  has_many   :registrations
+  has_many   :registrations, :order => "created_at DESC"
 
   # it's a bad idea to access votes directly from the user because, really, registrations own them.
   # the user relationship is mostly used for tallying unique votes by user for initiatives since

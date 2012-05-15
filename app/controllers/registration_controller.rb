@@ -1,21 +1,18 @@
 class RegistrationController < ApplicationController
   before_filter :session_required
-  before_filter :get_state,                         :only => [:register_domestic, :register_do, :register_foreign]
-  before_filter :new_registration,                  :only => [:register_domestic, :register_foreign]
+  before_filter :get_state,                         :only => [:register, :register_do]
+  before_filter :new_registration,                  :only => [:register]
 
   layout "active_admin_esque"
 
   def choose_location
-    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }
+    # exclude the 'stub' foreign state used to glue together foreign registrations
+    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }.reject{|s| s[:code] == "FO"}
   end
 
   # NOTE: @registration populated in before_filter
-  def register_domestic
-    return render "collect"
-  end
-
-  # NOTE: @registration populated in before_filter
-  def register_foreign
+  def register
+    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
     return render "collect"
   end
 
@@ -57,6 +54,8 @@ class RegistrationController < ApplicationController
 
       # if we have more specific requirements, use them
       @state.merge! :required_fields => state.required_fields if state.required_fields.present?
+    else
+      @state[:required_fields] << :country_code
     end
 
     # NOTE: no state currently implies foreign

@@ -37,7 +37,12 @@ ActiveAdmin.register Registration do
   # this is the method that handles displaying the certification wizard
   # NOTE: there are a lot of before filters that run before this method, which are found at the bottom of this file
   member_action :certify, :method => :get, :as => :block do
-    @state = @registration.state
+    unless @state = @registration.state
+      logger.warn "registration #{@registration.inspect} attempted to be certified but has no State"
+      flash[:warn] = "Something is wrong.  That registration doesn't have a State associated with it."
+      return redirect_to admin_registration_path(@registration)
+    end
+
     @steps = @state.certify_wizard
   end
 

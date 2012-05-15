@@ -22,8 +22,7 @@ NciVote::Application.routes.draw do
   # but I felt any other word would just make things more confusing and didn't wanna override Devises' concepts
   controller :registration, :path => "/" do
     get  "register_to_vote/choose_locale" => :choose_location,     :as => :choose_location
-    get  "register_to_vote/domestic"      => :register_domestic,   :as => :register_domestic
-    get  "register_to_vote/international" => :register_foreign,    :as => :register_foreign
+    get  "register_to_vote/information"   => :register,            :as => :register
     post "register_to_vote"               => :register_do,         :as => :register_do
   end
 

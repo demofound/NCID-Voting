@@ -1,6 +1,10 @@
 ActiveAdmin::Dashboards.build do
   section "Registrations Requiring Certification", :priority => 1 do
-    table_for Registration.recent(20, {:certified_at => nil, :certifier_id => [nil, current_user.id]}) do
+    # here we're going to pull down the most recent domestic 20 registrations that have
+    # not been certified and are not locked by other certifiers
+    table_for Registration.where({:certified_at => nil, :certifier_id => [nil, current_user.id]}).
+      where("state_id IS NOT null").limit(20) do
+
       column "" do |registration|
         link_to "certify", certify_admin_registration_path(registration)
       end
@@ -11,11 +15,10 @@ ActiveAdmin::Dashboards.build do
         link_to (user = registration.user).email, admin_user_path(user)
       end
       column "Created At", :created_at
-      column :state do |registration|
-        registration.state.name
-      end
+      column :state
     end
   end
+
 
   section "Active Initiatives", :priority => 2 do
     table_for Initiative.active(5) do
@@ -25,7 +28,7 @@ ActiveAdmin::Dashboards.build do
       column :start_at
       column :end_at
       column :vote_count do |initiative|
-        "#{initiative.votes.count} / #{initiative.votes_needed}"
+        "#{initiative.vote_count} / #{initiative.votes_needed}"
       end
     end
   end

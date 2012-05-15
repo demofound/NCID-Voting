@@ -18,6 +18,7 @@ gem "carrierwave"
 gem "paper_trail"
 gem "attr_encrypted"
 gem "diffy"
+gem "magic_encoding"
 
 #gem "omniauth-facebook",           :require => "omniauth-facebook"
 

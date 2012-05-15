@@ -31,7 +31,16 @@ img.userpic{
     display: block;
     height: 48px;
     width: 48px;
-    background-color: red;
+}
+
+img.userpic.medium{
+    height: 75px;
+    width: 75px;
+}
+
+img.userpic.large{
+    height: 150px;
+    width: 150px;
 }
 
 /* testamonials */
@@ -126,4 +135,16 @@ body.vote #new_vote .buttons{
 
 body.vote #new_vote .buttons li{
     float: none;
+}
+
+/* account management */
+
+#account_management{
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#account_management .userpic{
+    margin: 10px 0;
 }

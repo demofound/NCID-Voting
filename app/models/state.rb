@@ -7,22 +7,26 @@ class State < ActiveRecord::Base
   validates_format_of   :code, :with => /^[A-Z]+$/
   validates_length_of   :code, :is => 2
 
-  scope :with_required_fields, lambda { |field| {:conditions => "required_fields_mask & #{2**STATE_REQUIRED_FIELDS.index(field.to_s)} > 0"} }
+  scope :with_required_fields, lambda { |field| {:conditions => "required_fields_mask & #{2**STATE_ALL_FIELDS.index(field.to_s)} > 0"} }
 
   def required_fields=(required_fields)
-    return self.required_fields_mask = (required_fields.map(&:to_sym) & STATE_REQUIRED_FIELDS).map { |r| 2**STATE_REQUIRED_FIELDS.index(r) }.sum
+    return self.required_fields_mask = (required_fields.map(&:to_sym) & STATE_ALL_FIELDS).map { |r| 2**STATE_ALL_FIELDS.index(r) }.sum
   end
 
   def required_fields
-    return STATE_REQUIRED_FIELDS.reject { |r| ((required_fields_mask || 0) & 2**STATE_REQUIRED_FIELDS.index(r)).zero? }
+    return STATE_ALL_FIELDS.reject { |r| ((required_fields_mask || 0) & 2**STATE_ALL_FIELDS.index(r)).zero? }
   end
 
   def self.all_fields
-    return STATE_REQUIRED_FIELDS
+    return STATE_ALL_FIELDS
   end
 
   def self.domestic_fields
     return STATE_DOMESTIC_ONLY_FIELDS
+  end
+
+  def self.foreign_fields
+    return STATE_FOREIGN_ONLY_FIELDS
   end
 
   def self.anywhere_fields

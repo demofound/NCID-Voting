@@ -26,8 +26,7 @@ class ApplicationController < ActionController::Base
   def redirect_if_user_registration_needed
     # these routes are needed for the user to fill out the meta data
     if [ choose_location_path,
-         register_domestic_path,
-         register_foreign_path,
+         register_path,
          register_do_path ].include? request.path
 
       return

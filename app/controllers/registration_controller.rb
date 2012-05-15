@@ -37,11 +37,7 @@ class RegistrationController < ApplicationController
       return render :collect
     end
 
-    # TODO: try to locate the registration in the voter DB
-
-    logger.info "voter #{@registration.inspect} located in voter registration database #{@registration.errors}"
-    flash[:info] = "We have located you in our database."
-
+    flash[:info] = "Your registration has been saved and will be certified by a certifier soon."
     return redirect_to params[:forward_url] || root_path
   end
 

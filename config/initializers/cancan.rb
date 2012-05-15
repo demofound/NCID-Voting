@@ -1,1 +1,1 @@
-  ROLES = [:admin, :certifier, :voter]
+  ROLES = [:admin, :certifier]

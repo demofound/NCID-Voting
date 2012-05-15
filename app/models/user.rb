@@ -78,11 +78,6 @@ class User < ActiveRecord::Base
 
   private
 
-  def set_defaults
-    # if a user is confirmed, they can vote. if not, they can't do anything priviledged
-    self.roles ||= self.confirmed_at.present? ? [:voter] : []
-  end
-
   def current_user
     return nil unless session = UserSession.find
     return session.user

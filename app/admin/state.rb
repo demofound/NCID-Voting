@@ -6,7 +6,7 @@ ActiveAdmin.register State do
 
   form do |f|
     f.inputs "Content" do
-      f.input :required_fields, :as => :check_boxes, :collection => STATE_REQUIRED_FIELDS
+      f.input :required_fields, :as => :check_boxes, :collection => STATE_ALL_FIELDS
     end
     f.buttons
   end

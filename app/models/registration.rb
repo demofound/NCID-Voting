@@ -30,8 +30,9 @@ class Registration < ActiveRecord::Base
   # prevents access by other admins
   def lock!(certifier)
     return false if self.locked?                              # already locked?
-    return false if self.certifier.present?                   # already claimed?
-    return false unless self.certified_at.nil?                # already certified?
+# NCID staff determined it was best to disable these checks to allow people to recertify things
+#    return false if self.certifier.present?                   # already claimed?
+#    return false unless self.certified_at.nil?                # already certified?
 
     return self.update_attributes!(:certifier_id => certifier.id, :locked => true)
   end
@@ -40,8 +41,9 @@ class Registration < ActiveRecord::Base
   # - should pass in true if the certification is affirmative for eligibility
   def certify!(certifier, is_eligible = false)
     return false unless self.locked?                      # gotta be locked (ie. someone's done work to certify us)
-    return false unless self.certified_at.nil?            # can't already be certified
-    return false unless self.certifier_id == certifier.id # gotta be the currently active user
+# NCID staff determined it was best to disable these checks to allow people to recertify things
+#    return false unless self.certified_at.nil?            # can't already be certified
+#    return false unless self.certifier_id == certifier.id # gotta be the currently active user
 
     return self.update_attributes!(:certified_at => Time.now, :certification => is_eligible, :locked => false)
   end

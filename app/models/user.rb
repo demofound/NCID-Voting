@@ -34,8 +34,6 @@ class User < ActiveRecord::Base
 
   has_paper_trail :only => [:roles_mask, :username, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
 
-  before_save :set_defaults
-
   # no sense in trying to certify people who haven't passed voter registration certification
   def needs_certification?
     return (current_registration = self.current_registration) && !self.current_registration.certified?

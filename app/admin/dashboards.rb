@@ -2,7 +2,9 @@ ActiveAdmin::Dashboards.build do
   section "Registrations Requiring Certification", :priority => 1 do
     # here we're going to pull down the most recent domestic 20 registrations that have
     # not been certified and are not locked by other certifiers
-    table_for Registration.where({:certified_at => nil, :certifier_id => [nil, current_user.id]}).
+    # FIXME: it'd be nice to write a sql query that filters out "stale" registrations that have been
+    #        superceded by certified registrations, but that is beyond my current SQL-fu
+    table_for Registration.where({:certified_at => nil, :certifier_id => [nil, current_user.id]}).group("user_id").
       where("state_id IS NOT null").limit(20) do
 
       column "" do |registration|

@@ -17,8 +17,8 @@ class Initiative < ActiveRecord::Base
 
   def vote_count
     # since users can have many votes for an initiative (if they have
-    # multiple registrations), we need to ensure our tally only counts votes per user
-    return Vote.find_by_sql("SELECT COUNT(distinct user_id),user_id from votes where initiative_id = #{self.id} group by user_id").count
+    # multiple registrations), we need to ensure our tally only counts votes per user and only their most recent registration
+    return Vote.find_by_sql("SELECT COUNT(votes.user_id) AS votes_per_user FROM votes INNER JOIN registrations ON registrations.id = votes.registration_id WHERE initiative_id = #{self.id} AND registrations.certification IS true GROUP BY registrations.user_id;").count
   end
 
   private

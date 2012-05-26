@@ -19,7 +19,6 @@ test:
   pool: 5
   username: nci
   password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
-  socket: /opt/local/var/run/mysql5/mysqld.sock
 
 production:
   adapter: mysql2
@@ -29,7 +28,6 @@ production:
   pool: 5
   username: nci
   password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
-  socket: /tmp/mysql.sock
 
 staging:
   adapter: mysql2
@@ -39,4 +37,3 @@ staging:
   pool: 5
   username: nci
   password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
-  socket: /tmp/mysql.sock

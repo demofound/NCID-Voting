@@ -96,7 +96,6 @@ GEM
       actionpack (>= 3.1)
       less (~> 2.0.7)
     libv8 (3.3.10.4)
-    magic_encoding (0.0.2)
     mail (2.3.2)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -179,19 +178,18 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activeadmin
-  attr_encrypted
-  cancan
-  carrierwave
+  activeadmin (= 0.4.2)
+  attr_encrypted (= 1.2.0)
+  cancan (= 1.6.7)
+  carrierwave (= 0.5.8)
   coffee-rails
-  diffy
-  enumerated_attribute
-  magic_encoding
-  meta_search
-  mini_magick
-  mysql2
-  omniauth
-  paper_trail
+  diffy (= 2.0.6)
+  enumerated_attribute (= 0.2.16)
+  meta_search (= 1.1.3)
+  mini_magick (= 3.4)
+  mysql2 (= 0.3.11)
+  omniauth (= 1.0.3)
+  paper_trail (= 2.6.0)
   rails (= 3.1.3)
-  sass-rails
-  twitter-bootstrap-rails
+  sass-rails (= 3.1.5)
+  twitter-bootstrap-rails (= 2.0.3)

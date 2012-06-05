@@ -16,6 +16,8 @@ class Registration < ActiveRecord::Base
   has_paper_trail
 
   before_validation :derive_country
+  after_create      :actualize_temp_votes
+  after_create      :update_current_registration
 
   # if we have an associated state and if that associated state requires the fields in question
   validates_presence_of   :ssn,            :if => Proc.new { |r| r.state.required_fields.include?(:ssn_last_four)}
@@ -103,5 +105,31 @@ class Registration < ActiveRecord::Base
     if self.state.code != "FO"
       self.country_code ||= "US"
     end
+  end
+
+  ## guest method ##
+
+  def actualize_votes
+    self.user.guest_votes.each do |v|
+      unless v.update_attributes!(:registration_id => self.id)
+        # I can see circumstances where vote validation bounce votes from being associated
+        # with the registration, causing this to fail.  so for now let's just log it and
+        # possibly do some vote garbage collection later.  the key thing to remember here
+        # is that if the vote is bounced it wasn't valid anyway, so there's nothing "lost"
+        logger.error "unable to actualize guest vote #{v.inspect} because #{v.errors.inspect}"
+      end
+    end
+  end
+
+  private
+
+  def actualize_temp_votes
+    return if self.user.guest_votes.count == 0
+
+    self.actualize_votes
+  end
+
+  def update_current_registration
+    self.user.update_attributes!(:current_registration_id => self.id)
   end
 end

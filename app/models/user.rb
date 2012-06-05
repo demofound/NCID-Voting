@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
 
   has_paper_trail :only => [:roles_mask, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
 
-  ## guest methods ##
+  ## guest account methods ##
 
   def is_guest?
     return !self.email.index("not-an-actual-domain-at-all.com").nil?
@@ -51,6 +51,12 @@ class User < ActiveRecord::Base
     initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
     return self.votes.create(:initiative_id => initiative_id, :decision => true)
   end
+
+  def guest_votes
+    return self.votes.where(:registration_id => nil)
+  end
+
+  ## normal methods ##
 
   # no sense in trying to certify people who haven't passed voter registration certification
   def needs_certification?

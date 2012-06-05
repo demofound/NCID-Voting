@@ -17,9 +17,10 @@ class User < ActiveRecord::Base
   # so this means that current_registration may be toggled at any time
   belongs_to :current_registration, :class_name => "Registration"
 
-  # it's a bad idea to access votes directly from the user because, really, registrations own them.
-  # the user relationship is mostly used for tallying unique votes by user for initiatives since
-  # users can have many registrations and it would be difficult to tally without the user_id
+  # it's a bad idea to access votes directly from the user because, really, registrations
+  # own them.  the user relationship is mostly used for tallying unique votes by user for
+  # initiatives since users can have many registrations and it would be difficult to tally
+  # without the user_id
   has_many :votes
 
   has_many :comments_left,   :class_name => "AdminComment", :foreign_key => "commenter_id"
@@ -28,6 +29,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader
 
+  # I imagine a user creating an account with this domain in the email would cause
+  # problems with guest accounts...
+  validates_format_of :email, :with => /^(?:(?!not-an-actual-domain-at-all\.com).)*$/
+
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar
 
@@ -35,6 +40,17 @@ class User < ActiveRecord::Base
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
   has_paper_trail :only => [:roles_mask, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
+
+  ## guest methods ##
+
+  def is_guest?
+    return !self.email.index("not-an-actual-domain-at-all.com").nil?
+  end
+
+  def cast_guest_vote_on_initiative(initiative_code)
+    initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
+    return self.votes.create(:initiative_id => initiative_id, :decision => true)
+  end
 
   # no sense in trying to certify people who haven't passed voter registration certification
   def needs_certification?

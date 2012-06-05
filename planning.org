@@ -1,0 +1,10 @@
+NCID Voting Application
+* Beta
+** TODO make sure current_registration isn't used anywhere for "latest registration"
+** TODO create guest account
+** TODO on voting with a guest account, save TempVoteMap
+** TODO on registration, clear TempVoteMap and remap to registration
+** TODO on logging_in, transfer TempVoteMap over to real user
+** TODO post-vote redirect to registration page
+** TODO disable registration checks for voting
+** TODO enforce uniqueness restrictions for vote

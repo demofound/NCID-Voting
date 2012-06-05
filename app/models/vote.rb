@@ -1,6 +1,7 @@
 class Vote < ActiveRecord::Base
   include NCI::Utils::RefCode
 
+  has_one :temp_vote_map
   belongs_to :registration
   belongs_to :initiative
 

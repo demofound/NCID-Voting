@@ -10,8 +10,8 @@ ActiveAdmin::Views::Pages::Show.class_eval do
       # let's map out the IDs of the users who have participated in revisions
       user_ids = versions.map(&:whodunnit)
 
-      # let's index the usernames by id for easy reference in our loop below
-      users_by_id = User.select("username,id").all(:conditions => {:id => user_ids}).index_by(&:id)
+      # let's index the emails by id for easy reference in our loop below
+      users_by_id = User.select("email,id").all(:conditions => {:id => user_ids}).index_by(&:id)
 
       table :class => "versions index_table" do
         tr do
@@ -42,7 +42,7 @@ ActiveAdmin::Views::Pages::Show.class_eval do
               unless id = v.whodunnit.to_i and user = users_by_id[id]
                 "no user"
               else
-                link_to user.username, admin_user_path(user)
+                link_to user.email, admin_user_path(user)
               end
             end
             td do

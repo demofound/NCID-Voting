@@ -5,6 +5,8 @@ class Registration < ActiveRecord::Base
   belongs_to :user
   belongs_to :state
 
+  has_one :current_for_user,   :class_name => "User",         :foreign_key => "current_registration_id"
+
   attr_encrypted :ssn,            :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
   attr_encrypted :street_address, :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
 
@@ -76,7 +78,10 @@ class Registration < ActiveRecord::Base
 
   # returns whether the registration is eligible to vote
   def votable?
-    return self.certification.present?
+    # NOTE: it was requested by NCID staff to make all registrations automatically votable
+    #       regardless of certification status
+    return true
+#    return self.certification.present?
   end
 
   def self.recent(count, conditions = {})

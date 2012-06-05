@@ -170,7 +170,7 @@ ActiveAdmin.register Registration do
             simple_format registration.certification.to_s
           end
           td do
-            simple_format registration.certifier ? registration.certifier.username : ""
+            simple_format registration.certifier ? registration.certifier.email : ""
           end
         end
       end
@@ -252,7 +252,7 @@ ActiveAdmin.register Registration do
       # is the registration being certified by someone else?
       if @registration.locked?(current_user)
         certifier = @registration.certifier
-        flash[:error] = "This registration is currently locked by #{certifier.username} (#{certifier.email}).  Bother them."
+        flash[:error] = "This registration is currently locked by #{certifier.email}.  Bother them."
         return redirect_to admin_registration_path(@registration)
       end
 

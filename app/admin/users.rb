@@ -15,7 +15,6 @@ ActiveAdmin.register User do
     column "Email" do |user|
       link_to user.email, admin_user_path(user)
     end
-    column :username
     column :confirmed_at
   end
 
@@ -54,9 +53,6 @@ ActiveAdmin.register User do
             "Email"
           end
           th do
-            "Username"
-          end
-          th do
             "Roles"
           end
           th do
@@ -66,9 +62,6 @@ ActiveAdmin.register User do
         tr do
           td do
             simple_format user.email
-          end
-          td do
-            simple_format user.username
           end
           td do
             simple_format user.roles.to_sentence
@@ -143,7 +136,7 @@ ActiveAdmin.register User do
               simple_format registration.certification.to_s
             end
             td do
-              simple_format registration.certifier ? registration.certifier.username : ""
+              simple_format registration.certifier ? registration.certifier.email : ""
             end
           end
         end

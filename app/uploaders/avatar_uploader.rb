@@ -7,7 +7,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
   process :convert        => 'jpg'      # avatars should always be jpegs
 
   def store_dir
-    "system/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.username}"
+    "system/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:

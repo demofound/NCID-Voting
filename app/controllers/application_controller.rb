@@ -1,9 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  before_filter :redirect_if_user_registration_needed
-  before_filter :pass_forward_url
-  before_filter :return_to_storage
+  before_filter :redirect_if_user_registration_needed, :pass_forward_url, :return_to_storage, :get_active_registrations
 
   layout :layout_by_resource
 
@@ -78,6 +76,10 @@ class ApplicationController < ActionController::Base
   def pass_forward_url
     # if we've been handed a forward_url, make it available to the views or whomever to handle
     @forward_url = params[:forward_url]
+  end
+
+  def get_active_registrations
+    @active_registrations = current_or_guest_user.active_registrations
   end
 
   def session_required

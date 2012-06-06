@@ -58,6 +58,11 @@ class User < ActiveRecord::Base
 
   ## normal methods ##
 
+  def active_registrations
+    # latest first, grab records uniquely filtered by fullname
+    return self.registrations.group("fullname")
+  end
+
   # no sense in trying to certify people who haven't passed voter registration certification
   def needs_certification?
     return (current_registration = self.current_registration) && !self.current_registration.certified?

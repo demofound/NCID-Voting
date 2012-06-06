@@ -33,3 +33,21 @@ li.input{ list-style-type: none; }
   border: 1px solid red;
   box-shadow: 0 0 5px red;
 }
+
+.choose_location form{
+  float: right;
+  margin-top: -34px;
+  text-align: right;
+}
+
+.choose_location hr{
+  margin-bottom: 12px;
+}
+
+.choose_location #state_codes input[type="submit"]{
+  margin: 15px 0;
+}
+
+.choose_location #login > div{
+  clear: both;
+}

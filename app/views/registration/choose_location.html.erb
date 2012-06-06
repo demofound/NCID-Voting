@@ -4,13 +4,25 @@
 <div id="login" class="row-fluid">
   <div class="span6">
     <h3>United States</h3>
-    <% @states.each do |s| %>
-      <%= link_to s[:name], register_path(:state_code => s[:code], :forward_url => @forward_url) %><br/>
+    <%# @current_user isn't really for anything other than letting us leverage the form helper %>
+    <%= form_for @current_user, :url => register_path, :method => "get", :html => {:id => "state_codes"} do |f| %>
+    <input type="hidden" name="forward_url" value="<%= @forward_url %>" />
+    <select name="state_code">
+      <% @states.each do |s| %>
+        <option value="<%= s[:code] %>"><%= s[:name] %></option>
+      <% end %>
+    </select><br/>
+    <input type="submit" value="Continue with State" />
     <% end %>
   </div>
   <div class="span6">
+    <hr />
     <h3>Non-US</h3>
-    <%= link_to "Continue", register_path(:state_code => "FO", :forward_url => @forward_url) %>
+    <%= form_for @current_user, :url => register_path, :method => "get", :html => {:id => "foreign_code"} do |f| %>
+    <input type="hidden" name="forward_url" value="<%= @forward_url %>" />
+    <input type="hidden" value="FO" name="state_code" />
+    <input type="submit" value="Continue non-US" />
+    <% end %>
   </div>
 </div>
 

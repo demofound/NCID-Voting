@@ -140,6 +140,7 @@ body.vote #new_vote .buttons li{
 /* account management */
 
 #account_management{
+    margin-left: 10px;
     width: 50%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -147,4 +148,19 @@ body.vote #new_vote .buttons li{
 
 #account_management .userpic{
     margin: 10px 0;
+}
+
+/* registration switcher */
+
+#registration_picker{
+    position: relative;
+    top: 5px;
+}
+
+#registration_picker > *{
+    display: inline-block;
+}
+
+#registration_picker select{
+    width: 150px;
 }

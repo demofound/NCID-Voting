@@ -99,6 +99,11 @@ class User < ActiveRecord::Base
     return self.registrations.empty?
   end
 
+  def change_current_registration(id)
+    # make sure we only change registrations to registrations owned by the user!
+    return self.update_attributes!(:current_registration_id => id) if self.registrations.where(:id => id).first
+  end
+
   # In order to support the desired workflow (vote/account creation simultaneous -> email confirmation -> registration)
   # we need this notion of temporary votes.  Basically votes are owned by registrations, not users, so to support
   # a user being able to vote prior to registering, we need to record the vote and have a way to know to associate

@@ -23,6 +23,7 @@ NciVote::Application.routes.draw do
   controller :registration, :path => "/" do
     get  "register_to_vote/choose_locale" => :choose_location,     :as => :choose_location
     get  "register_to_vote/information"   => :register,            :as => :register
+    put  "registration/current"           => :change_current,      :as => :change_registration
     post "register_to_vote"               => :register_do,         :as => :register_do
   end
 

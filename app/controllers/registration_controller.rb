@@ -10,6 +10,14 @@ class RegistrationController < ApplicationController
     @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }.reject{|s| s[:code] == "FO"}
   end
 
+  def change_current
+    message = current_or_guest_user.change_current_registration(params[:current_registration]) ? "Registration changed!" :
+      "Registration could not be changed."
+
+    flash[:info] = message
+    return redirect_to session[:return_to]
+  end
+
   # NOTE: @registration populated in before_filter
   def register
     @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]

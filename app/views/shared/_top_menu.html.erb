@@ -23,16 +23,17 @@
             <%= link_to "Login / Create Account", new_user_session_path, :class => "btn" %></a>
           <% end %>
           </div>
-          <div class="pull-right" id="registration_picker">
+          <div class="divider-vertical pull-right"></div>
+          <%= form_for @current_user, :html => {:class => "pull-right", :id => "registration_picker"}, :method => "put", :url => change_registration_path do |f| %>
             <% if @active_registrations.length > 1 %>
-              <label for="current_registration">Active Registration:</label>
               <select name="current_registration" id="current_registration">
                 <% @active_registrations.each do |r| %>
-                  <option value="<%= r.fullname %>"><%= r.fullname %></option>
+                  <option value="<%= r.id %>" <% if (r.id == @current_user.current_registration_id) %>selected="selected"<% end %>><%= r.fullname %></option>
                 <% end %>
               </select>
+              <input type="submit" value="Switch Registration" />
             <% end %>
-          </div>
+          <% end %>
           <div class="container nav-collapse">
             <ul class="nav">
               <li><%= link_to "FAQ",       faq_path %></li>

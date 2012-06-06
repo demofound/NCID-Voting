@@ -16,9 +16,8 @@ class Initiative < ActiveRecord::Base
   attr_protected :creator
 
   def vote_count
-    # since users can have many votes for an initiative (if they have
-    # multiple registrations), we need to ensure our tally only counts votes per user and only their most recent registration
-    return Vote.find_by_sql("SELECT COUNT(votes.user_id) AS votes_per_user FROM votes INNER JOIN registrations ON registrations.id = votes.registration_id WHERE initiative_id = #{self.id} AND registrations.certification IS true GROUP BY registrations.user_id;").count
+    # since users can have many votes for an initiative (if they have multiple registrations), we need to ensure our tally only counts votes in the scope of unique registrations, which for now I'm defining as having unique fullnames in the scope of a user
+    return Vote.find_by_sql("SELECT COUNT(votes.user_id) AS votes_per_user FROM votes INNER JOIN registrations ON registrations.id = votes.registration_id WHERE initiative_id = #{self.id} AND registrations.certification IS true GROUP BY registrations.user_id,registrations.fullname;").count
   end
 
   private

@@ -116,6 +116,6 @@ class VoteController < ApplicationController
     if @vote
       flash[:warn] = "You have already voted. Your vote is displayed below."
       return redirect_to show_vote_path(@vote.ref_code)
-p    end
+    end
   end
 end

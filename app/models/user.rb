@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /^(?:(?!not-an-actual-domain-at-all\.com).)*$/
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar, :current_registration_id
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }

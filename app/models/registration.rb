@@ -16,8 +16,7 @@ class Registration < ActiveRecord::Base
   has_paper_trail
 
   before_validation :derive_country
-  after_create      :actualize_temp_votes
-  after_create      :update_current_registration
+  after_create      :actualize_temp_votes, :update_current_registration
 
   # if we have an associated state and if that associated state requires the fields in question
   validates_presence_of   :ssn,            :if => Proc.new { |r| r.state.required_fields.include?(:ssn_last_four)}
@@ -121,15 +120,15 @@ class Registration < ActiveRecord::Base
     end
   end
 
-  private
+  protected
 
   def actualize_temp_votes
-    return if self.user.guest_votes.count == 0
-
     self.actualize_votes
   end
 
   def update_current_registration
-    self.user.update_attributes!(:current_registration_id => self.id)
+    unless self.user.update_attributes!(:current_registration_id => self.id)
+      logger.error "unable to set current registration #{self.inspect} for user #{self.user.inspect}"
+    end
   end
 end

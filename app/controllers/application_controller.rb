@@ -79,7 +79,8 @@ class ApplicationController < ActionController::Base
   end
 
   def get_active_registrations
-    @active_registrations = current_or_guest_user.active_registrations
+    @current_or_guest_user = current_or_guest_user
+    @active_registrations  = @current_or_guest_user.active_registrations
   end
 
   def session_required

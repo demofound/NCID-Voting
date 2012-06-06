@@ -1,4 +1,7 @@
 ActiveAdmin.register Initiative do
+  # the multiple-initiative aspect of this was confusing people so it's disabled for now
+  menu false
+
   index do
     column "Name" do |initiative|
       link_to initiative.name, admin_initiative_path(initiative)

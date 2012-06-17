@@ -1,7 +1,7 @@
 <div id="account_management" class="border-box">
   <h3>Manage Your Account</h3>
 
-  <%= semantic_form_for @user, :as => @user, :url => update_user_do_path do |f| %>
+  <%= semantic_form_for @user, :as => @user, :url => update_user_path do |f| %>
     <%= f.input :avatar, :label => "Upload a userpic" %>
     <p>Current userpic:</p>
     <%= image_tag @user.avatar.url, :class => "userpic medium" %>

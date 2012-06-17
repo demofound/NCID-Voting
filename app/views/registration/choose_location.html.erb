@@ -5,7 +5,7 @@
   <div class="span6">
     <h3>United States</h3>
     <%# @current_user isn't really for anything other than letting us leverage the form helper %>
-    <%= form_for @current_user, :url => register_path, :method => "get", :html => {:id => "state_codes"} do |f| %>
+    <%= form_for @current_user, :url => new_registration_path, :method => "get", :html => {:id => "state_codes"} do |f| %>
     <input type="hidden" name="forward_url" value="<%= @forward_url %>" />
     <select name="state_code">
       <% @states.each do |s| %>
@@ -18,7 +18,7 @@
   <div class="span6">
     <hr />
     <h3>Non-US</h3>
-    <%= form_for @current_user, :url => register_path, :method => "get", :html => {:id => "foreign_code"} do |f| %>
+    <%= form_for @current_user, :url => new_registration_path, :method => "get", :html => {:id => "foreign_code"} do |f| %>
     <input type="hidden" name="forward_url" value="<%= @forward_url %>" />
     <input type="hidden" value="FO" name="state_code" />
     <input type="submit" value="Continue non-US" />

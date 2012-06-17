@@ -4,7 +4,7 @@
 
   <p>We need to collect some information from you so that we can find you in your state's voter registration database.</p>
 
-  <%= semantic_form_for(@registration, :as => @registration, :url => register_do_path) do |f| %>
+  <%= semantic_form_for(@registration, :as => @registration, :url => create_registration_path) do |f| %>
     <input type="hidden" name="registration[state_code]" type="hidden" value="<%= @state[:code] %>" />
 
     <% if @forward_url.present? %>

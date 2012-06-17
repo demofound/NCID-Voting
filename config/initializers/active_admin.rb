@@ -5,7 +5,7 @@ ActiveAdmin.setup do |config|
 
   def check_admin_role
     return if current_user.role?(:admin) or current_user.role?(:certifier)
-    redirect_to update_user_path
+    redirect_to edit_user_path
   end
 
   # == Site Title

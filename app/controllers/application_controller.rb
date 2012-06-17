@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_confirmation_path_for(user)
-    return user_user_path
+    return edit_user_path
   end
 
   # if we've got a user and the user doesn't have registration data
@@ -68,8 +68,8 @@ class ApplicationController < ActionController::Base
   def redirect_if_user_registration_needed
     # these routes are needed for the user to fill out the meta data
     if [ choose_location_path,
-         register_path,
-         register_do_path ].include? request.path
+         new_registration_path,
+         create_registration_path ].include? request.path
 
       return
     end

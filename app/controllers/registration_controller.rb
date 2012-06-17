@@ -5,13 +5,7 @@ class RegistrationController < ApplicationController
 
   layout "active_admin_esque"
 
-  def choose_location
-    # exclude the 'stub' foreign state used to glue together foreign registrations
-# FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
-#    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }.reject{|s| s[:code] == "FO"}
-  end
-
-  def change_current
+  def edit
     message = current_or_guest_user.change_current_registration(params[:current_registration]) ? "Registration changed!" :
       "Registration could not be changed."
 
@@ -20,13 +14,13 @@ class RegistrationController < ApplicationController
   end
 
   # NOTE: @registration populated in before_filter
-  def register
+  def new
 # FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
 #    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
     return render "collect"
   end
 
-  def register_do
+  def create
     registration_data = {
       :fullname       => params[:registration][:fullname],
       :street_address => params[:registration][:street_address],

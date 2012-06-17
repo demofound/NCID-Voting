@@ -15,7 +15,7 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-              <li><%= link_to "Manage Account", update_user_path %></li>
+              <li><%= link_to "Manage Account", edit_user_path %></li>
               <li class="divider"></li>
               <li><%= link_to "Logout", destroy_user_session_path %></li>
             </ul>
@@ -24,7 +24,7 @@
           <% end %>
           </div>
           <div class="divider-vertical pull-right"></div>
-          <%= form_for @current_or_guest_user, :html => {:class => "pull-right", :id => "registration_picker"}, :method => "put", :url => change_registration_path do |f| %>
+          <%= form_for @current_or_guest_user, :html => {:class => "pull-right", :id => "registration_picker"}, :method => "put", :url => update_registration_path do |f| %>
             <% if @active_registrations.length > 1 %>
               <select name="current_registration" id="current_registration">
                 <% @active_registrations.each do |r| %>

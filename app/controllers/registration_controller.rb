@@ -17,7 +17,6 @@ class RegistrationController < ApplicationController
   def new
 # FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
 #    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
-    return render "collect"
   end
 
   def create
@@ -35,7 +34,7 @@ class RegistrationController < ApplicationController
       logger.info "unable to save registration #{registration_data.inspect} for user #{current_or_guest_user.inspect} because #{@registration.errors.inspect}"
 
       # rerender the form
-      return render :collect
+      return render :new
     end
 
     flash[:info] = "Your registration has been saved and will be certified by a certifier soon."

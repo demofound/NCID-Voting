@@ -7,7 +7,8 @@ class RegistrationController < ApplicationController
 
   def choose_location
     # exclude the 'stub' foreign state used to glue together foreign registrations
-    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }.reject{|s| s[:code] == "FO"}
+# FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
+#    @states = State.order("name").all.map {|s| {:name => s.name, :code => s.code } }.reject{|s| s[:code] == "FO"}
   end
 
   def change_current
@@ -20,7 +21,8 @@ class RegistrationController < ApplicationController
 
   # NOTE: @registration populated in before_filter
   def register
-    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
+# FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
+#    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
     return render "collect"
   end
 

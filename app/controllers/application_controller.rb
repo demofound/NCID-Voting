@@ -35,6 +35,14 @@ class ApplicationController < ActionController::Base
         logger.error "unable to swap vote #{v.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
       end
     end
+
+    unless registrations = guest_user.registrations and registrations.update_all(:user_id => current_user.id)
+      logger.error "unable to swap registrations #{registrations.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+    end
+
+    unless current_user.update_attributes!(:current_registration_id => guest_user.current_registration_id)
+        logger.error "unable to swap current registration from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+      end
   end
 
   def create_guest_user
@@ -52,7 +60,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_confirmation_path_for(user)
-    return choose_location_path
+    return user_user_path
   end
 
   # if we've got a user and the user doesn't have registration data

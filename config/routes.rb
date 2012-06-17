@@ -11,7 +11,7 @@ NciVote::Application.routes.draw do
   get  "home/index"
 
   # this macro handles account registration...
-  devise_for :users, active_admin_devise_config
+  devise_for :users, active_admin_devise_config.merge(:controllers => { :registrations => "users/registrations" })
 
   controller :user, :path => "/user" do
     get "account" => :update,    :as => :update_user

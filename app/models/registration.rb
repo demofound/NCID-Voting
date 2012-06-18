@@ -19,7 +19,7 @@ class Registration < ActiveRecord::Base
 
   # if we have an associated state and if that associated state requires the fields in question
   validates_presence_of   :state_id
-  validates_presence_of   :ssn#,            :if => Proc.new { |r| r.state.required_fields.include?(:ssn_last_four)}
+  validates_presence_of   :ssn,            :if => Proc.new { |r| r.state.present? && r.state.required_fields.include?(:ssn_last_four)}
   validates_length_of     :ssn,            :is => 4,            :allow_nil => true # we only collect the last four digits
   validates_format_of     :ssn,            :with => /^[0-9]+$/, :allow_nil => true
   validates_presence_of   :street_address

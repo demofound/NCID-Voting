@@ -1,13 +1,11 @@
   <h3>Voter Registration</h3>
-  <%= resource.errors.inspect %>
-
-  <%= resource.registrations.first.errors.inspect if resource.registrations.present?%>
-
   <%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
     <% if @forward_url.present? %>
       <input type="hidden" name="forward_url" type="hidden" value="<%= @forward_url %>" />
     <% end %>
 
+    <%# I wish I didn't have to do this build here but doing it in the
+        registrations controller doesn't seem to work %>
     <% resource.registrations.build unless resource.registrations.present? %>
     <%= f.inputs :for => :registrations do |registration_form| %>
       <%= registration_form.input :state_id, :label => "State", :as => :select, :collection => @states %>

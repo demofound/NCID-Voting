@@ -1,11 +1,15 @@
   <h3>Voter Registration</h3>
+  <%= resource.errors.inspect %>
+
+  <%= resource.registrations.first.errors.inspect if resource.registrations.present?%>
 
   <%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-    <%= f.inputs :for => :registration do |registration_form| %>
-      <% if @forward_url.present? %>
-        <input type="hidden" name="forward_url" type="hidden" value="<%= @forward_url %>" />
-      <% end %>
+    <% if @forward_url.present? %>
+      <input type="hidden" name="forward_url" type="hidden" value="<%= @forward_url %>" />
+    <% end %>
 
+    <% resource.registrations.build unless resource.registrations.present? %>
+    <%= f.inputs :for => :registrations do |registration_form| %>
       <%= registration_form.input :state_id, :label => "State", :as => :select, :collection => @states %>
       <%= registration_form.input :fullname, :label => "Full Name" %>
       <%= registration_form.input :street_address %>

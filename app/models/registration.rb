@@ -15,12 +15,11 @@ class Registration < ActiveRecord::Base
   # some of these attributes are encrypted but eh, let's store their changes anyway
   has_paper_trail
 
-  before_validation :derive_country
   after_create      :actualize_temp_votes, :update_current_registration
 
   # if we have an associated state and if that associated state requires the fields in question
   validates_presence_of   :state_id
-  validates_presence_of   :ssn,            :if => Proc.new { |r| r.state.required_fields.include?(:ssn_last_four)}
+  validates_presence_of   :ssn#,            :if => Proc.new { |r| r.state.required_fields.include?(:ssn_last_four)}
   validates_length_of     :ssn,            :is => 4,            :allow_nil => true # we only collect the last four digits
   validates_format_of     :ssn,            :with => /^[0-9]+$/, :allow_nil => true
   validates_presence_of   :street_address
@@ -98,13 +97,6 @@ class Registration < ActiveRecord::Base
   def cast_vote_on_initiative(initiative_code)
     initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
     return self.votes.create(:initiative_id => initiative_id, :decision => true, :user_id => self.user.id)
-  end
-
-  def derive_country
-    # "FO" is the code of the stub 'foreign' state.  we'll have to collect it from the user if it isn't a US state
-    if self.state.code != "FO"
-      self.country_code ||= "US"
-    end
   end
 
   ## guest method ##

@@ -8,7 +8,7 @@
 class User < ActiveRecord::Base
   has_many :testimonials
   has_many :initiatives
-  has_many :registrations, :order => "created_at DESC"
+  has_many :registrations, :order => "created_at DESC", :dependent => :destroy
 
   # the current registration is the registration the user is current using to vote.
   # the user can change registrations for many reasons including:
@@ -34,7 +34,8 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /^(?:(?!not-an-actual-domain-at-all\.com).)*$/
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar, :current_registration_id, :registration
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar, :current_registration_id, :registrations_attributes
+  accepts_nested_attributes_for :registrations
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }

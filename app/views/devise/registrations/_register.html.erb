@@ -8,12 +8,7 @@
         registrations controller doesn't seem to work %>
     <% resource.registrations.build unless resource.registrations.present? %>
     <%= f.inputs :for => :registrations do |registration_form| %>
-      <%= registration_form.input :state_id, :label => "State", :as => :select, :collection => @states %>
-      <%= registration_form.input :fullname, :label => "Full Name" %>
-      <%= registration_form.input :street_address %>
-      <%= registration_form.input :postal_code %>
-      <%= registration_form.input :ssn, :type => :password, :label => "SSN last four digits" %>
-      <%= registration_form.input :country_code, :as => :select, :collection => @countries, :label => "Country" %>
+      <%= render :partial => "devise/registrations/registration_fields", :locals => {:f => registration_form} %>
     <% end %>
 
     <%= f.inputs do %>

@@ -1,7 +1,8 @@
 class VoteController < ApplicationController
   before_filter :get_user!                                               # all voting activity requires a session (provided by Devise)
-  # it was requested NCID staff that users be able to vote without a registration
-  # before_filter :certified?,         :only => [:new, :create]            # all voting requires a certified registration
+  before_filter :has_registration?                                       # current behavior is that one needs a registration to vote
+                                                                         # NOTE: the registration may be owned by a guest, however
+
   before_filter :initiative_exists?, :only => [:new, :create]            # voting requires an initiative as the voting subject
   before_filter :attempt_to_get_vote                                     # a vote may or may not exist but all actions should check
   before_filter :has_not_voted?,     :only => [:new, :create]            # make sure people can only vote once
@@ -100,17 +101,13 @@ class VoteController < ApplicationController
     @vote_contents = NCI::Views::Vote.to_hash(@vote)
   end
 
-  # it was requested NCID staff that users be able to vote without a registration
-  # def certified?
-  #   # NOTE: registration requirement handled by "redirect_if_user_registration_needed"
-  #   #       before_filter in application controller
-  #   # not using roles here before the registrations can change out from underneath us
-  #   unless current_or_guest_user.can_vote?
-  #     flash[:info] = "You must be registered before you are eligible to vote."
-  #     logger.info "unregistered visit to the voting page was redirected to registration"
-  #     return redirect_to root_path
-  #   end
-  # end
+  # if a guest user has clicked on the vote button but doesn't yet have a registration we
+  # need to force them to register before they can proceed
+  def has_registration?
+    if current_or_guest_user.needs_registration?
+      return redirect_to new_registration_path(:forward_url => return_to_storage)
+    end
+  end
 
   def has_not_voted?
     if @vote

@@ -26,7 +26,7 @@
 
     <% if @state[:required_fields].include? :ssn_last_four %>
       <%= f.inputs :class => "ssn" do %>
-        <%= f.input :ssn, :type => :password, :label => "Last four digits of your Social Security Number" %>
+        <%= f.input :ssn, :type => :password, :label => "Last four digits of your Social Security Number or..." %>
       <% end %>
     <% end %>
 

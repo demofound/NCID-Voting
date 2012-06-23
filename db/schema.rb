@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120604185410) do
+ActiveRecord::Schema.define(:version => 20120622232237) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -71,12 +71,21 @@ ActiveRecord::Schema.define(:version => 20120604185410) do
     t.boolean  "needs_review"
     t.boolean  "locked"
     t.boolean  "certification"
+    t.string   "drivers_license"
+    t.string   "dob"
   end
 
   create_table "states", :force => true do |t|
     t.string   "code"
     t.string   "name"
     t.integer  "required_fields_mask"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "temp_vote_maps", :force => true do |t|
+    t.integer  "vote_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -102,7 +111,6 @@ ActiveRecord::Schema.define(:version => 20120604185410) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "username"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"

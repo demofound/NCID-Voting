@@ -123,6 +123,12 @@ ActiveAdmin.register Registration do
             "SSN"
           end
           th do
+            "Driver's License"
+          end
+          th do
+            "DOB"
+          end
+          th do
             "Country Code"
           end
           th do
@@ -153,6 +159,12 @@ ActiveAdmin.register Registration do
           end
           td do
             registration.ssn
+          end
+          td do
+            registration.drivers_license
+          end
+          td do
+            registration.dob
           end
           td do
             registration.country_code

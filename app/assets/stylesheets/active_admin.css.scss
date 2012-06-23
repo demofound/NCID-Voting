@@ -51,3 +51,9 @@ li.input{ list-style-type: none; }
 .choose_location #login > div{
   clear: both;
 }
+
+fieldset ol{
+    padding-left: 0 !important;
+    width: 100% !important;
+}
+

@@ -29,7 +29,6 @@ NciVote::Application.routes.draw do
   controller :vote, :path => "/" do
     get    ":initiative_code/vote"  => :new,    :as => :new_vote
     post   ":initiative_code/vote"  => :create, :as => :create_vote
-    get    "vote/:ref_code"         => :show,   :as => :show_vote
   end
 
   controller :info, :path => "/info" do

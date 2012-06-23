@@ -1,11 +1,11 @@
 class VoteController < ApplicationController
   before_filter :get_user!                                               # all voting activity requires a session (provided by Devise)
+  before_filter :has_not_voted?,     :only => [:new, :create]            # make sure people can only vote once
   before_filter :has_registration?                                       # current behavior is that one needs a registration to vote
                                                                          # NOTE: the registration may be owned by a guest, however
 
   before_filter :initiative_exists?, :only => [:new, :create]            # voting requires an initiative as the voting subject
   before_filter :attempt_to_get_vote                                     # a vote may or may not exist but all actions should check
-  before_filter :has_not_voted?,     :only => [:new, :create]            # make sure people can only vote once
   before_filter :vote_exists?,       :only => [:show, :update, :destroy] # these methods require a valid vote
 
   # renders the page where a voter will decide what vote to cast
@@ -27,38 +27,9 @@ class VoteController < ApplicationController
     end
 
     @vote_contents = NCI::Views::Vote.to_hash(@vote)
+
+    flash[:info] = "We have successfully recorded your vote."
   end
-
-  # view a vote
-  # NOTE: vote is automatically found via a before filter
-  def show
-    authorize! :read, @vote
-  end
-
-  # modify a vote disabled - probably don't need or want this
-  # NOTE: vote is automatically found via a before filter
-  # def update
-  #   # FIXME: verify that can is properly checking ownership of the vote... magical
-  #   authorize! :update, @vote
-
-  #   unless @vote.update_attributes!(@vote_contents)
-  #     logger.warn "user #{current_user.inspect} attempted to update vote with invalid data #{@vote_contents.inspect}"
-  #     return render :status => 422
-  #   end
-
-  #   @vote_contents = NCI::Views::Vote.to_hash(@vote)
-  # end
-
-  # nuke a vote disabled - probably don't want this
-  # NOTE: vote is automatically found via a before filter
-  # def destroy
-  #   authorize! :destroy, @vote
-
-  #   unless @vote.destroy
-  #     logger.error "vote #{params[:ref_code].inspect} was unable to be destroyed"
-  #     return render :status => 500 # something bizarre happened
-  #   end
-  # end
 
   private
 
@@ -102,8 +73,8 @@ class VoteController < ApplicationController
 
   def has_not_voted?
     if @vote
-      flash[:warn] = "You have already voted. Your vote is displayed below."
-      return redirect_to show_vote_path(@vote.ref_code)
+      flash[:warn] = "You have already voted."
+      redirect_to return_to_storage
     end
   end
 end

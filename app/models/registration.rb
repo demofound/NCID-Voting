@@ -14,12 +14,10 @@ class Registration < ActiveRecord::Base
 
   attr_accessible :certifier_id, :locked, :certified_at, :certification, :needs_review, :fullname, :ssn, :street_address, :postal_code, :country_code, :state_id, :user_id, :drivers_license, :dob
 
-  attr_accessor :year, :month, :day
-
   # some of these attributes are encrypted but eh, let's store their changes anyway
   has_paper_trail
 
-  after_create      :actualize_temp_votes, :update_current_registration
+  after_create      :update_current_registration
   before_validation :dateify_dob
   before_validation :handle_foreign_state
 
@@ -34,7 +32,6 @@ class Registration < ActiveRecord::Base
   validates_presence_of   :postal_code
   validates_presence_of   :country_code
   validates_format_of     :country_code,    :with => /^[A-Z]+$/
-  validates_presence_of   :user_id
   validates_presence_of   :fullname  # no point in trying to validate internationalizable names with regex or anything
 
   # basically begins the certification process - claims the user by the admin and
@@ -107,24 +104,11 @@ class Registration < ActiveRecord::Base
     return self.votes.create(:initiative_id => initiative_id, :decision => true, :user_id => self.user.id)
   end
 
-  ## guest method ##
-
-  def actualize_votes
-    self.user.guest_votes.each do |v|
-      unless v.update_attributes!(:registration_id => self.id)
-        # I can see circumstances where vote validation bounce votes from being associated
-        # with the registration, causing this to fail.  so for now let's just log it and
-        # possibly do some vote garbage collection later.  the key thing to remember here
-        # is that if the vote is bounced it wasn't valid anyway, so there's nothing "lost"
-        logger.error "unable to actualize guest vote #{v.inspect} because #{v.errors.inspect}"
-      end
-    end
-  end
-
   protected
 
   def license_or_ssn_validity
     # users need to provide either an ssn or a driver's license number or both
+    # NOTE: no way to validate a driver's license... they're all too different
     errors.add(:drivers_license, "is required if you aren't providing an SSN") if self.ssn.empty? &&
       self.drivers_license.empty? &&
       self.state.present?
@@ -157,7 +141,7 @@ class Registration < ActiveRecord::Base
   end
 
   def update_current_registration
-    unless self.user.current_registration_id = self.id and self.user.save(:validate => false)
+    unless self.user.update_attributes!(:current_registration_id => self.id)
       logger.error "unable to set current registration #{self.inspect} for user #{self.user.inspect}"
     end
   end

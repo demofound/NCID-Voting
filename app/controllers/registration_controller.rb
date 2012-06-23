@@ -1,12 +1,11 @@
 class RegistrationController < ApplicationController
-  before_filter :session_required
   before_filter :get_state,                         :only => [:register, :register_do]
   before_filter :new_registration,                  :only => [:register]
 
   layout "active_admin_esque"
 
   def edit
-    message = current_or_guest_user.change_current_registration(params[:current_registration]) ? "Registration changed!" :
+    message = current_user.change_current_registration(params[:current_registration]) ? "Registration changed!" :
       "Registration could not be changed."
 
     flash[:info] = message
@@ -15,8 +14,6 @@ class RegistrationController < ApplicationController
 
   # NOTE: @registration populated in before_filter
   def new
-# FIXME: [registration_combined] need to figure out if formtastic will render this stuff right
-#    @countries = Hash[*Country.all.map{|s| [s.name, s.code] }.flatten]
   end
 
   def create
@@ -27,11 +24,11 @@ class RegistrationController < ApplicationController
       :country_code   => params[:registration][:country_code],
       :ssn            => params[:registration][:ssn],
       :state_id       => @state[:id],
-      :user_id        => current_or_guest_user.id
+      :user_id        => current_user.id
     }
 
     unless @registration = Registration.create(registration_data) and @registration.save
-      logger.info "unable to save registration #{registration_data.inspect} for user #{current_or_guest_user.inspect} because #{@registration.errors.inspect}"
+      logger.info "unable to save registration #{registration_data.inspect} for user #{current_user.inspect} because #{@registration.errors.inspect}"
 
       # rerender the form
       return render :new
@@ -66,8 +63,8 @@ class RegistrationController < ApplicationController
     # decided to disable the registration uniqueness behavior based on feedback from the NCID team
     # # do they already have a registration waiting certification? to avoid overloading
     # # the certifiers we only allow one pending registration at a time
-    # if registration_pending = current_or_guest_user.current_registration and !registration_pending.certified?
-    #   logger.warn "user #{current_or_guest_user} tried to create a new registration when they already one pending #{registration_pending.inspect}"
+    # if registration_pending = current_user.current_registration and !registration_pending.certified?
+    #   logger.warn "user #{current_user} tried to create a new registration when they already one pending #{registration_pending.inspect}"
     #   flash[:warning] = "You already have a registration pending certification. Please wait for this registration to be certified."
     #   return redirect_to session[:return_to] # send them back
     # end

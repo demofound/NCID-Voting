@@ -7,49 +7,23 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  # if user is logged in, return current_user, else return guest_user
-  def current_or_guest_user
-    if current_user
-      if session[:guest_user_id]
-        logging_in
-        guest_user.destroy
-        session[:guest_user_id] = nil
-      end
-      return current_user
-    else
-      return guest_user
-    end
-  end
-
-  # find guest_user object associated with the current session,
-  # creating one as needed
-  def guest_user
-    User.find(session[:guest_user_id].nil? ? session[:guest_user_id] = create_guest_user.id : session[:guest_user_id])
-  end
-
   # called (once) when the user logs in
   # hand off from guest_user to current_user
-  def logging_in
-    guest_user.votes.each do |v|
-      unless v.update_attributes!(:user_id => current_user.id)
-        logger.error "unable to swap vote #{v.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
-      end
-    end
+  # def logging_in
+  #   guest_user.votes.each do |v|
+  #     unless v.update_attributes!(:user_id => current_user.id)
+  #       logger.error "unable to swap vote #{v.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #     end
+  #   end
 
-    unless registrations = guest_user.registrations and registrations.update_all(:user_id => current_user.id)
-      logger.error "unable to swap registrations #{registrations.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
-    end
+  #   unless registrations = guest_user.registrations and registrations.update_all(:user_id => current_user.id)
+  #     logger.error "unable to swap registrations #{registrations.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #   end
 
-    unless current_user.update_attributes!(:current_registration_id => guest_user.current_registration_id)
-        logger.error "unable to swap current registration from guest user #{guest_user.inspect} to user #{current_user.inspect}"
-      end
-  end
-
-  def create_guest_user
-    u = User.create(:email => "guest_#{Time.now.to_i}#{rand(99)}@not-an-actual-domain-at-all.com")
-    u.save(:validate => false)
-    return u
-  end
+  #   unless current_user.update_attributes!(:current_registration_id => guest_user.current_registration_id)
+  #       logger.error "unable to swap current registration from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #     end
+  # end
 
   def layout_by_resource
     if devise_controller?
@@ -69,8 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_active_registrations
-    @current_or_guest_user = current_or_guest_user
-    @active_registrations  = @current_or_guest_user.active_registrations
+    @active_registrations  = @current_user.active_registrations if @current_user = current_user
   end
 
   def session_required

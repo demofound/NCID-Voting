@@ -16,20 +16,14 @@ class VoteController < ApplicationController
 
   # handles the submission of a cast vote by a voter
   def create
-    user = current_or_guest_user
+    user = current_user
 
-    @vote = user.is_guest? ? user.cast_guest_vote_on_initiative(@initiative.code) :
-      user.current_registration.cast_vote_on_initiative(@initiative.code)
+    @vote = user.current_registration.cast_vote_on_initiative(@initiative.code)
 
     unless @vote
       logger.warn "user #{current_user_or_guest_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
       flash[:warn] = "There was an issue with your vote."
       return render :new
-    end
-
-    if current_or_guest_user.is_guest?
-      flash[:info] = "We have documented your vote. Next you must create an account with us for the vote to be tabulated."
-      return redirect_to new_user_session_path
     end
 
     @vote_contents = NCI::Views::Vote.to_hash(@vote)
@@ -48,7 +42,7 @@ class VoteController < ApplicationController
   #   authorize! :update, @vote
 
   #   unless @vote.update_attributes!(@vote_contents)
-  #     logger.warn "user #{current_or_guest_user.inspect} attempted to update vote with invalid data #{@vote_contents.inspect}"
+  #     logger.warn "user #{current_user.inspect} attempted to update vote with invalid data #{@vote_contents.inspect}"
   #     return render :status => 422
   #   end
 
@@ -69,8 +63,7 @@ class VoteController < ApplicationController
   private
 
   def get_user!
-    # either get the current logged-in user or create a guest user
-    current_or_guest_user
+    current_user
   end
 
   def initiative_exists?
@@ -87,7 +80,7 @@ class VoteController < ApplicationController
       return @vote = Vote.first(:conditions => {:ref_code => params[:ref_code]})
     end
 
-    if @initiative && @registration = current_or_guest_user.current_registration
+    if @initiative && @registration = current_user.current_registration
       @vote = @registration.read_vote_on_initiative(@initiative.code)
     end
   end
@@ -104,8 +97,8 @@ class VoteController < ApplicationController
   # if a guest user has clicked on the vote button but doesn't yet have a registration we
   # need to force them to register before they can proceed
   def has_registration?
-    if current_or_guest_user.needs_registration?
-      return redirect_to new_registration_path(:forward_url => return_to_storage)
+    unless current_user
+      return redirect_to new_user_registration_path(:forward_url => url_for(params))
     end
   end
 

@@ -21,7 +21,7 @@ class VoteController < ApplicationController
     @vote = user.current_registration.cast_vote_on_initiative(@initiative.code)
 
     unless @vote
-      logger.warn "user #{current_user_or_guest_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
+      logger.warn "user #{current_user.inspect} submitted a vote with invalid data #{@vote_contents.inspect}"
       flash[:warn] = "There was an issue with your vote."
       return render :new
     end
@@ -94,8 +94,6 @@ class VoteController < ApplicationController
     @vote_contents = NCI::Views::Vote.to_hash(@vote)
   end
 
-  # if a guest user has clicked on the vote button but doesn't yet have a registration we
-  # need to force them to register before they can proceed
   def has_registration?
     unless current_user
       return redirect_to new_user_registration_path(:forward_url => url_for(params))

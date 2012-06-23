@@ -1,12 +1,12 @@
     <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
+      <div id="top-menu" class="navbar-inner">
         <div class="container">
           <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">NCID Voting</a>
+          <a id="logo" class="brand" href="/">NCID Voting</a>
           <div class="pull-right btn-group">
           <% if @current_user %>
             <a class="btn dropdown-toggle" data-toggle="dropdown">
@@ -23,18 +23,17 @@
             <%= link_to "Login / Create Account", new_user_session_path, :class => "btn" %></a>
           <% end %>
           </div>
-          <div class="divider-vertical pull-right"></div>
           <% if @current_user %>
-            <%= form_for @current_user, :html => {:class => "pull-right", :id => "registration_picker"}, :method => "put", :url => update_registration_path do |f| %>
-              <% if @active_registrations.length > 1 %>
-                <select name="current_registration" id="current_registration">
-                  <% @active_registrations.each do |r| %>
-                    <option value="<%= r.id %>" <% if (r.id == @current_user.current_registration_id) %>selected="selected"<% end %>><%= r.fullname %></option>
-                  <% end %>
-                </select>
-                <input type="submit" value="Switch Registration" />
-              <% end %>
+          <%= form_for @current_user, :html => {:class => "pull-right", :id => "registration_picker"}, :method => "put", :url => update_registration_path do |f| %>
+            <% if @active_registrations.length > 1 %>
+              <select name="current_registration" id="current_registration">
+                <% @active_registrations.each do |r| %>
+                  <option value="<%= r.id %>" <% if (r.id == @current_user.current_registration_id) %>selected="selected"<% end %>><%= r.fullname %></option>
+                <% end %>
+              </select>
+              <input type="submit" value="Switch Registration" />
             <% end %>
+          <% end %>
           <% end %>
           <div class="container nav-collapse">
             <ul class="nav">

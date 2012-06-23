@@ -1,11 +1,11 @@
 class VoteController < ApplicationController
   before_filter :get_user!                                               # all voting activity requires a session (provided by Devise)
+  before_filter :attempt_to_get_vote                                     # a vote may or may not exist but all actions should check
   before_filter :has_not_voted?,     :only => [:new, :create]            # make sure people can only vote once
   before_filter :has_registration?                                       # current behavior is that one needs a registration to vote
                                                                          # NOTE: the registration may be owned by a guest, however
 
   before_filter :initiative_exists?, :only => [:new, :create]            # voting requires an initiative as the voting subject
-  before_filter :attempt_to_get_vote                                     # a vote may or may not exist but all actions should check
   before_filter :vote_exists?,       :only => [:show, :update, :destroy] # these methods require a valid vote
 
   # renders the page where a voter will decide what vote to cast
@@ -72,9 +72,9 @@ class VoteController < ApplicationController
   end
 
   def has_not_voted?
-    if @vote
+    if current_user && current_user.current_registration.read_vote_on_initiative(params[:initiative_code])
       flash[:warn] = "You have already voted."
-      redirect_to return_to_storage
+      redirect_to root_path
     end
   end
 end

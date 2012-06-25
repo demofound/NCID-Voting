@@ -164,3 +164,41 @@ body.vote #new_vote .buttons li{
 #registration_picker select{
     width: 150px;
 }
+
+#logo{
+    width: 209px;
+    height: 50px;
+    display: block;
+    background: transparent url(../images/ncid_logo.png) center center no-repeat;
+    text-indent: -9999px;
+    position: relative;
+    top: -5px;
+}
+
+#top-menu{
+    background: none;
+    background-color: #efefef;
+    box-shadow: none;
+    border-bottom: 1px solid #ccc;
+}
+
+#top-menu, #top-menu .nav a{
+    line-height: 40px;
+    height: 60px;
+}
+
+#top-menu .nav a{
+    color: #666;
+}
+
+#top-menu .nav a:hover{
+    color: #000;
+}
+
+#top-menu .dropdown-toggle{
+    margin-top: 10px;
+}
+
+.navbar-fixed-top + .container{
+    margin-top: 20px;
+}

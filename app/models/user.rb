@@ -8,7 +8,7 @@
 class User < ActiveRecord::Base
   has_many :testimonials
   has_many :initiatives
-  has_many :registrations, :order => "created_at DESC"
+  has_many :registrations, :order => "created_at DESC", :dependent => :destroy
 
   # the current registration is the registration the user is current using to vote.
   # the user can change registrations for many reasons including:
@@ -26,35 +26,17 @@ class User < ActiveRecord::Base
   has_many :comments_left,   :class_name => "AdminComment", :foreign_key => "commenter_id"
   has_many :certified_users, :class_name => "User",         :foreign_key => "certifier_id"
 
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :confirmable, :trackable, :validatable, :omniauthable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :omniauthable
   mount_uploader :avatar, AvatarUploader
 
-  # I imagine a user creating an account with this domain in the email would cause
-  # problems with guest accounts...
-  validates_format_of :email, :with => /^(?:(?!not-an-actual-domain-at-all\.com).)*$/
-
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar, :current_registration_id
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :avatar, :current_registration_id, :registrations_attributes
+  accepts_nested_attributes_for :registrations, :limit => 1
 
   # yes, this is ripped off from Ryan Bates' Railscast
   scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
   has_paper_trail :only => [:roles_mask, :email], :skip => PAPER_TRAIL_SKIP_ATTRIBUTES + [:password, :password_confirmation, :remember_me, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :avatar, :confirmation_token, :confirmed_at, :confirmation_sent_at, :encrypted_password]
-
-  ## guest account methods ##
-
-  def is_guest?
-    return !self.email.index("not-an-actual-domain-at-all.com").nil?
-  end
-
-  def cast_guest_vote_on_initiative(initiative_code)
-    initiative_id = Initiative.where(:code => initiative_code).select(:id).first.id
-    return self.votes.create(:initiative_id => initiative_id, :decision => true)
-  end
-
-  def guest_votes
-    return self.votes.where(:registration_id => nil)
-  end
 
   ## normal methods ##
 

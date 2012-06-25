@@ -1,47 +1,29 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  before_filter :redirect_if_user_registration_needed, :pass_forward_url, :return_to_storage, :get_active_registrations
+  before_filter :pass_forward_url, :return_to_storage, :get_active_registrations
 
   layout :layout_by_resource
 
   protected
 
-  # if user is logged in, return current_user, else return guest_user
-  def current_or_guest_user
-    if current_user
-      if session[:guest_user_id]
-        logging_in
-        guest_user.destroy
-        session[:guest_user_id] = nil
-      end
-      return current_user
-    else
-      return guest_user
-    end
-  end
-
-  # find guest_user object associated with the current session,
-  # creating one as needed
-  def guest_user
-    User.find(session[:guest_user_id].nil? ? session[:guest_user_id] = create_guest_user.id : session[:guest_user_id])
-  end
-
   # called (once) when the user logs in
   # hand off from guest_user to current_user
-  def logging_in
-    guest_user.votes.each do |v|
-      unless v.update_attributes!(:user_id => current_user.id)
-        logger.error "unable to swap vote #{v.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
-      end
-    end
-  end
+  # def logging_in
+  #   guest_user.votes.each do |v|
+  #     unless v.update_attributes!(:user_id => current_user.id)
+  #       logger.error "unable to swap vote #{v.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #     end
+  #   end
 
-  def create_guest_user
-    u = User.create(:email => "guest_#{Time.now.to_i}#{rand(99)}@not-an-actual-domain-at-all.com")
-    u.save(:validate => false)
-    return u
-  end
+  #   unless registrations = guest_user.registrations and registrations.update_all(:user_id => current_user.id)
+  #     logger.error "unable to swap registrations #{registrations.inspect} from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #   end
+
+  #   unless current_user.update_attributes!(:current_registration_id => guest_user.current_registration_id)
+  #       logger.error "unable to swap current registration from guest user #{guest_user.inspect} to user #{current_user.inspect}"
+  #     end
+  # end
 
   def layout_by_resource
     if devise_controller?
@@ -52,25 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_confirmation_path_for(user)
-    return choose_location_path
-  end
-
-  # if we've got a user and the user doesn't have registration data
-  # we need to force them to fill it out
-  def redirect_if_user_registration_needed
-    # these routes are needed for the user to fill out the meta data
-    if [ choose_location_path,
-         register_path,
-         register_do_path ].include? request.path
-
-      return
-    end
-
-    if current_user && current_user.needs_registration?
-      # forward_url allows us to hand the original URL that brought us here down the chain
-      flash[:info] = "You've logged in!  Next we'll walk you through registering to vote."
-      return redirect_to choose_location_path(:forward_url => request.path)
-    end
+    return edit_user_path
   end
 
   def pass_forward_url
@@ -79,17 +43,21 @@ class ApplicationController < ActionController::Base
   end
 
   def get_active_registrations
-    @current_or_guest_user = current_or_guest_user
-    @active_registrations  = @current_or_guest_user.active_registrations
+    @active_registrations  = @current_user.active_registrations if @current_user = current_user
   end
 
   def session_required
     unless current_user.present?
-      return redirect_to new_user_session_path
+      return redirect_to new_user_registration_path
     end
   end
 
   def return_to_storage
     session[:return_to] ||= request.referer
+  end
+
+  def get_realms
+    @states    = State.order("name").all.reject{|s| s[:code] == "FO"}
+    @countries = Hash[*Country.order("name").all.map{|s| [s.name, s.code] }.flatten]
   end
 end

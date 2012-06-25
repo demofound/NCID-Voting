@@ -1,0 +1,16 @@
+<%# not really login but we're just invoking the active admin css style here %>
+<div id="login">
+  <h2>Create New Registration</h2>
+  <% if @forward_url.present? %>
+    <input type="hidden" name="forward_url" type="hidden" value="<%= @forward_url %>" />
+  <% end %>
+
+  <%= semantic_form_for(@registration, :url => create_registration_path) do |f| %>
+    <%= f.inputs :for => :registrations do |registration_form| %>
+      <%= render :partial => "devise/registrations/registration_fields", :locals => {:f => registration_form} %>
+    <% end %>
+    <%= f.buttons do %>
+      <%= f.commit_button "Submit Voter Registration" %>
+    <% end %>
+  <% end %>
+</div>

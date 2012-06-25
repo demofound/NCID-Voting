@@ -2,10 +2,10 @@ class UserController < ApplicationController
   before_filter :get_user
   before_filter :session_required
 
-  def update
+  def edit
   end
 
-  def update_do
+  def update
     user_data = {
       :avatar => params[:user][:avatar]
     }
@@ -16,7 +16,7 @@ class UserController < ApplicationController
     end
 
     flash[:info] = "Your account has been updated."
-    return redirect_to update_user_path(@user)
+    return redirect_to edit_user_path(@user)
   end
 
   protected

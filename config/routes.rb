@@ -11,31 +11,24 @@ NciVote::Application.routes.draw do
   get  "home/index"
 
   # this macro handles account registration...
-  devise_for :users, active_admin_devise_config
+  devise_for :users, active_admin_devise_config.merge(:controllers => { :registrations => "users/registrations" })
 
   controller :user, :path => "/user" do
-    get "account" => :update,    :as => :update_user
-    put "account" => :update_do, :as => :update_user_do
+    get "account" => :edit,   :as => :edit_user
+    put "account" => :update, :as => :update_user
   end
 
   # this 'registration' means *voter registration* not account registration. sorry for any confusion
   # but I felt any other word would just make things more confusing and didn't wanna override Devises' concepts
   controller :registration, :path => "/" do
-    get  "register_to_vote/choose_locale" => :choose_location,     :as => :choose_location
-    get  "register_to_vote/information"   => :register,            :as => :register
-    put  "registration/current"           => :change_current,      :as => :change_registration
-    post "register_to_vote"               => :register_do,         :as => :register_do
+    get  "register_to_vote" => :new,    :as => :new_registration
+    put  "register_to_vote" => :edit,   :as => :update_registration
+    post "register_to_vote" => :create, :as => :create_registration
   end
 
   controller :vote, :path => "/" do
     get    ":initiative_code/vote"  => :new,    :as => :new_vote
     post   ":initiative_code/vote"  => :create, :as => :create_vote
-
-    get    "vote/:ref_code"         => :show,   :as => :show_vote
-# modify vote disabled - probably don't want it
-#    put    "vote/:ref_code"         => :update, :as => :update_vote
-# delete vote disabled - probably don't want it
-#    delete "vote/:ref_code"         => :delete, :as => :delete_vote
   end
 
   controller :info, :path => "/info" do

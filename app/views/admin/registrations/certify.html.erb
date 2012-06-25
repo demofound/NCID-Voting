@@ -5,23 +5,27 @@
 <table class="index_table">
   <tr>
     <th>Full Name</th>
-    <th>Username</th>
+    <th>Email</th>
+    <th>DOB</th>
     <th>Street Address</th>
     <th>State</th>
     <th>City</th>
     <th>Postal Code</th>
     <th>Country Code</th>
     <th>SSN</th>
+    <th>Driver's License</th>
   </tr>
   <tr>
     <td><%= @registration.fullname %></td>
     <td><%= @user.email %></td>
+    <td><%= @registration.dob %></td>
     <td><%= @registration.street_address %></td>
     <td><%= @registration.state.name %></td>
     <td><%= @registration.city %></td>
     <td><%= @registration.postal_code %></td>
     <td><%= @registration.country_code %></td>
     <td><%= @registration.ssn %></td>
+    <td><%= @registration.drivers_license %></td>
   </tr>
 </table>
 <br/>

@@ -22,7 +22,7 @@ NciVote::Application.routes.draw do
   # but I felt any other word would just make things more confusing and didn't wanna override Devises' concepts
   controller :registration, :path => "/" do
     get  "register_to_vote" => :new,    :as => :new_registration
-    put  "register_to_vote" => :update, :as => :update_registration
+    put  "register_to_vote" => :edit,   :as => :update_registration
     post "register_to_vote" => :create, :as => :create_registration
   end
 

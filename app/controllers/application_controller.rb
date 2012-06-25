@@ -55,4 +55,9 @@ class ApplicationController < ActionController::Base
   def return_to_storage
     session[:return_to] ||= request.referer
   end
+
+  def get_realms
+    @states    = State.order("name").all.reject{|s| s[:code] == "FO"}
+    @countries = Hash[*Country.order("name").all.map{|s| [s.name, s.code] }.flatten]
+  end
 end

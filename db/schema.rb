@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622232237) do
+ActiveRecord::Schema.define(:version => 20120625032825) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(:version => 20120622232237) do
     t.boolean  "needs_review"
     t.boolean  "locked"
     t.boolean  "certification"
-    t.string   "drivers_license"
-    t.string   "dob"
+    t.string   "encrypted_drivers_license"
+    t.string   "encrypted_dob"
   end
 
   create_table "states", :force => true do |t|

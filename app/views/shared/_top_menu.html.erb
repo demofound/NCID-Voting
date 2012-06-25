@@ -20,7 +20,7 @@
               <li><%= link_to "Logout", destroy_user_session_path %></li>
             </ul>
           <% else %>
-            <%= link_to "Login / Create Account", new_user_session_path, :class => "btn" %></a>
+            <%= link_to "Login", new_user_session_path, :class => "btn" %></a>
           <% end %>
           </div>
           <% if @current_user %>
@@ -28,7 +28,7 @@
             <% if @active_registrations.length > 1 %>
               <select name="current_registration" id="current_registration">
                 <% @active_registrations.each do |r| %>
-                  <option value="<%= r.id %>" <% if (r.id == @current_user.current_registration_id) %>selected="selected"<% end %>><%= r.fullname %></option>
+                  <option value="<%= r.id %>" <% if (r.id == @current_user.current_registration_id) %>selected="selected"<% end %>><%= r.fullname %> (<%= r.created_at.strftime("%B %d, %Y") %>)</option>
                 <% end %>
               </select>
               <input type="submit" value="Switch Registration" />

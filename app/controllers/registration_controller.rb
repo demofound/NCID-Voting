@@ -1,6 +1,7 @@
 class RegistrationController < ApplicationController
-  before_filter :get_state,                         :only => [:register, :register_do]
-  before_filter :new_registration,                  :only => [:register]
+  before_filter :has_account?
+  before_filter :get_realms,       :only => [:new, :create]
+  before_filter :new_registration, :only => [:new]
 
   layout "active_admin_esque"
 
@@ -17,15 +18,8 @@ class RegistrationController < ApplicationController
   end
 
   def create
-    registration_data = {
-      :fullname       => params[:registration][:fullname],
-      :street_address => params[:registration][:street_address],
-      :postal_code    => params[:registration][:postal_code],
-      :country_code   => params[:registration][:country_code],
-      :ssn            => params[:registration][:ssn],
-      :state_id       => @state[:id],
-      :user_id        => current_user.id
-    }
+    registration_data = params[:registration][:registrations]
+    registration_data[:user_id] = current_user.id
 
     unless @registration = Registration.create(registration_data) and @registration.save
       logger.info "unable to save registration #{registration_data.inspect} for user #{current_user.inspect} because #{@registration.errors.inspect}"
@@ -40,25 +34,6 @@ class RegistrationController < ApplicationController
 
   private
 
-  def get_state
-    # this param will either come from the form post or from the get params
-    state_code  = params[:registration].present? ? params[:registration][:state_code] : params[:state_code]
-
-    @state = {
-      :required_fields => State.anywhere_fields # default to the fields that apply anywhere
-    }
-
-    if state = State.first(:conditions => {:code => state_code})
-      @state.merge! :code => state.code
-      @state.merge! :id   => state.id
-
-      # if we have more specific requirements, use them
-      @state.merge! :required_fields => state.required_fields if state.required_fields.present?
-    else
-      @state[:required_fields] << :country_code
-    end
-  end
-
   def new_registration
     # decided to disable the registration uniqueness behavior based on feedback from the NCID team
     # # do they already have a registration waiting certification? to avoid overloading
@@ -70,6 +45,13 @@ class RegistrationController < ApplicationController
     # end
 
     # okay, they don't have a pending certification
-    @registration = Registration.new(:state_id => @state[:id])
+    @registration = Registration.new(:user_id => current_user.id)
+  end
+
+  def has_account?
+    unless current_user.present?
+      flash[:error] = "You will need to create an account to do that."
+      return redirect_to new_user_registration_path
+    end
   end
 end

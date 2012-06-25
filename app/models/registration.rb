@@ -12,7 +12,7 @@ class Registration < ActiveRecord::Base
   attr_encrypted :drivers_license, :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
   attr_encrypted :dob,             :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
 
-  attr_accessible :certifier_id, :locked, :certified_at, :certification, :needs_review, :fullname, :ssn, :street_address, :postal_code, :country_code, :state_id, :user_id, :drivers_license, :dob
+  attr_accessible :certifier_id, :locked, :certified_at, :certification, :needs_review, :fullname, :ssn, :street_address, :postal_code, :country_code, :state_id, :user_id, :drivers_license, :dob, :city
 
   # some of these attributes are encrypted but eh, let's store their changes anyway
   has_paper_trail
@@ -29,6 +29,7 @@ class Registration < ActiveRecord::Base
 
   validates_presence_of   :dob
   validates_presence_of   :street_address
+  validates_presence_of   :city
   validates_presence_of   :postal_code
   validates_presence_of   :country_code
   validates_format_of     :country_code,    :with => /^[A-Z]+$/
@@ -109,21 +110,22 @@ class Registration < ActiveRecord::Base
   def license_or_ssn_validity
     # users need to provide either an ssn or a driver's license number or both
     # NOTE: no way to validate a driver's license... they're all too different
-    errors.add(:drivers_license, "is required if you aren't providing an SSN") if self.ssn.empty? &&
-      self.drivers_license.empty? &&
+    errors.add(:drivers_license, "is required if you aren't providing an SSN") if self.ssn.blank? &&
+      self.drivers_license.blank? &&
       self.state.present?
 
-    errors.add(:ssn, "is required if you aren't providing a Driver's License Number") if self.drivers_license.empty? &&
-      self.ssn.empty? &&
+    errors.add(:ssn, "is required if you aren't providing a Driver's License Number") if self.drivers_license.blank? &&
+      self.ssn.blank? &&
       self.state.present?
 
     # ssn must be in the right format if it's present
-    errors.add(:ssn, "is the wrong format") unless self.ssn.empty? || (self.ssn.length == 4 && self.ssn.match(/^[0-9]+$/))
+    errors.add(:ssn, "is the wrong format") unless self.ssn.blank? || (self.ssn.length == 4 && self.ssn.match(/^[0-9]+$/))
   end
 
   def dob_validity
     parts = self.dob.split("/").map{|i| i.to_i}
-    errors.add(:dob, "is invalid.") unless parts[0] > 0 && parts[0] < 13 &&
+    errors.add(:dob, "is invalid.") unless parts.length == 3 &&
+      parts[0] > 0 && parts[0] < 13 &&
       parts[1] > 0 && parts[1] < 31 &&
       parts[2] > 1900 && parts[2] < Time.now.year.to_i
   end
@@ -132,6 +134,7 @@ class Registration < ActiveRecord::Base
   # our version of Rails with multiparameter attributes :( and besides I bet people are
   # more used to entering string formatted dates anyway
   def dateify_dob
+    self.dob ||= ""
     parts    = self.dob.split("/").map{|i| i.to_i}
     self.dob = "#{parts[0].to_s.rjust(2, "0")}/#{parts[1].to_s.rjust(2, "0")}/#{parts[2]}"
   end

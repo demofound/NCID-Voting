@@ -12,12 +12,13 @@ class Registration < ActiveRecord::Base
   attr_encrypted :drivers_license, :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
   attr_encrypted :dob,             :key => ATTR_ENCRYPTED_KEY, :algorithm => ATTR_ENCRYPTED_CIPHER
 
-  attr_accessible :certifier_id, :locked, :certified_at, :certification, :needs_review, :fullname, :ssn, :street_address, :postal_code, :country_code, :state_id, :user_id, :drivers_license, :dob, :city
+  attr_accessible :certifier_id, :locked, :certified_at, :certification, :needs_review, :fullname, :ssn, :street_address, :postal_code, :country_code, :state_id, :user_id, :drivers_license, :dob, :city, :county
 
   # some of these attributes are encrypted but eh, let's store their changes anyway
   has_paper_trail
 
   after_create      :update_current_registration
+  after_create      :automatically_vote
   before_validation :dateify_dob
   before_validation :handle_foreign_state
 
@@ -30,6 +31,7 @@ class Registration < ActiveRecord::Base
   validates_presence_of   :dob
   validates_presence_of   :street_address
   validates_presence_of   :city
+  validates_presence_of   :county
   validates_presence_of   :postal_code
   validates_presence_of   :country_code
   validates_format_of     :country_code,    :with => /^[A-Z]+$/
@@ -154,5 +156,12 @@ class Registration < ActiveRecord::Base
     if self.country_code != "US"
       self.state_id = State.where(:code => "FO").first.id
     end
+  end
+
+  # it's been requested to make registrations basically synonymous with votes, so...
+  # here's this thing that does that. it wasn't really my architectural goal to make it
+  # work this way so excuse the blunt approach
+  def automatically_vote
+    self.cast_vote_on_initiative("ncid")
   end
 end

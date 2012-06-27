@@ -12,6 +12,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def after_sign_up_path_for(resource)
-    params[:forward_url] || root_path
+    return root_path
   end
 end

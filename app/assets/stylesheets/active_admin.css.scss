@@ -57,3 +57,8 @@ fieldset ol{
     width: 100% !important;
 }
 
+body.logged_out{
+    background-image: url(../images/ncid_logo.png);
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+}

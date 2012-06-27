@@ -9,13 +9,13 @@
       <p>National Citizens Initiative for Democracy includes:</p>
 
       <ol>
-        <li>a Citizens Amendment to the Constitution that creates a &quot;Legislature of the People&quot; able to amend constitutions and enact law, and sets electoral standards for each; sanctions the election conducted by Philadelphia II; creates a Citizens Trust; and limits the contribution of funds in initiative elections to natural persons;</li>
+        <li>a Citizens Amendment to the Constitution that creates a &quot;Legislature of the People&quot; able to amend constitutions and enact laws, and sets electoral standards for each; sanctions the election conducted by Philadelphia II; creates a Citizens Trust; and limits the contribution of funds in initiative elections to natural persons;</li>
 
-        <li>and also includes a Citizens Legislative Procedures Act establishing legislative procedures administered by the Citizens Trust on behalf of the people so they can deliberatively exercise their legislative powers; and details the operations of the National Citizens Initiative for Democracy</li>
+        <li>also includes a Citizens Legislative Procedures Act establishing legislative procedures administered by the Citizens Trust on behalf of the people so they can deliberatively exercise their legislative powers; and details the operations of the National Citizens Initiative for Democracy</li>
       </ol>
 
         <!-- some big vote button graphic here -->
-        <%= link_to "Vote!", new_vote_path(:initiative_code => DEFAULT_INITIATIVE), :class => "btn btn-primary btn-large vote" %>
+        <%= link_to "Vote", new_vote_path(:initiative_code => DEFAULT_INITIATIVE), :class => "btn btn-primary btn-large vote" %>
     </div>
     <div class="span4">
         <%= render :partial => "shared/testimonials", :locals => {:testimonials => @testimonials} %>

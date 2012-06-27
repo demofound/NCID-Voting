@@ -3,6 +3,7 @@
       <%= f.input  :street_address, :label => "Residential Street" %>
       <%= f.input  :city %>
       <%= f.input  :postal_code %>
+      <%= f.input  :county, :as => :string, :label => "County" %>
       <%= f.input  :country_code, :as => :select, :collection => @countries, :label => "Country" %>
       <%= f.input  :ssn, :type => :password, :label => "SSN last four digits or..." %>
       <%= f.input  :drivers_license, :type => :password, :label => "... driver's license" %>

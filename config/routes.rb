@@ -27,8 +27,9 @@ NciVote::Application.routes.draw do
   end
 
   controller :vote, :path => "/" do
-    get    ":initiative_code/vote"  => :new,    :as => :new_vote
-    post   ":initiative_code/vote"  => :create, :as => :create_vote
+    get    ":initiative_code/vote"    => :new,    :as => :new_vote
+    get    "donate"                   => :donate, :as => :donate
+    post   ":initiative_code/vote"    => :create, :as => :create_vote
   end
 
   controller :info, :path => "/info" do

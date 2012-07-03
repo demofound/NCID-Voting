@@ -31,6 +31,10 @@ class VoteController < ApplicationController
     flash[:info] = "We have successfully recorded your vote."
   end
 
+  def donate
+    return render "create.html.erb"
+  end
+
   private
 
   def get_user!

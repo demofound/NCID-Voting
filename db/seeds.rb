@@ -23,4 +23,4 @@ countries.each{|c| Country.create(c)}
 
 ## initiatives
 
-Initiative.create({:name => "National Citizens Initiative for Democracy", :description => "The National Citizens Initiative for Democracy is a proposal which will permit citizens to make laws by ballot initiative.", :user_id => 0, :code => "ncid"})
+Initiative.create({:name => "National Citizens Initiative for Democracy", :description => "The National Citizens Initiative for Democracy is a proposal which will permit citizens to make laws by ballot initiative.", :user_id => 0, :code => "ncid", :votes_needed => 1000000})

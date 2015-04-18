@@ -5,7 +5,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     # stupid stupid hack.  I don't know why user.registrations.build isn't setting the user_id foreign key GRRR
-#    params[:user][:registrations_attributes]["0"][:user_id] = current_user.id
+    params[:user][:registrations_attributes]["0"][:user_id] = current_user.id
     super
   end
 

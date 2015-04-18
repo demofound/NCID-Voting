@@ -47,7 +47,7 @@ NciVote::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { :host => 'vote.ncid.info' }
+  config.action_mailer.default_url_options = { :host => 'vote.ncid.us' }
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {

@@ -26,9 +26,9 @@ NciVote::Application.configure do
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
-    :address              => "ncid.info",
+    :address              => "ncid.us",
     :port                 => 587,
-    :user_name            => 'noreply@ncid.info',
+    :user_name            => 'noreply@ncid.us',
     :password             => ENV['NCID_VOTE_EMAIL_PASSWORD'],
     :authentication       => 'plain',
     :enable_starttls_auto => true

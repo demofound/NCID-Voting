@@ -7,7 +7,7 @@ class UserController < ApplicationController
 
   def update
     user_data = {
-      :avatar => params[:user][:avatar]
+      :avatar => params[:user] && params[:user][:avatar]
     }
 
     unless @user.update_attributes!(user_data)

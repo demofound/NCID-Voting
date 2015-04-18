@@ -3,3 +3,8 @@ db/*.sqlite3
 log/*.log
 tmp/
 public/system/uploads
+config/database.yml
+config/initializers/secret_token.rb
+config/initializers/attr_encrypted.rb
+*~
+#*

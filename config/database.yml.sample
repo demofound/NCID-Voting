@@ -1,12 +1,11 @@
-# FIXME: derive database passwords to ENV rather than storing them in the repo
 development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: nci_vote_development
+  database: development
   pool: 5
-  username: nci
-  password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
+  username: dbuser
+  password: changeme
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -15,25 +14,26 @@ test:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: nci_vote_test
+  database: test
   pool: 5
-  username: nci
-  password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
+  username: dbuser
+  password: changeme
 
 production:
   adapter: mysql2
   encoding: utf8
   reconnect: true
-  database: nci_vote_production
+  database:  production
   pool: 5
-  username: nci
-  password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
+  username: dbuser
+  password: changeme
 
 staging:
   adapter: mysql2
   encoding: utf8
   reconnect: true
-  database: nci_vote_staging
+  database: staging
   pool: 5
-  username: nci
-  password: <%= ENV['NCID_VOTE_DB_PASSWORD'] %>
+  username: dbuser
+  password: changeme
+
